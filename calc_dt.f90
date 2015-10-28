@@ -45,7 +45,6 @@ CONTAINS
     small = 0
 
 
-    IF(use_fortran_kernels)THEN
       CALL calc_dt_kernel(chunk%tiles(tile)%t_xmin,     &
         chunk%tiles(tile)%t_xmax,     &
         chunk%tiles(tile)%t_ymin,     &
@@ -79,41 +78,7 @@ CONTAINS
         jldt,                          &
         kldt,                          &
         small                          )
-    ELSEIF(use_C_kernels)THEN
-      CALL calc_dt_kernel_c(chunk%tiles(tile)%t_xmin,     &
-        chunk%tiles(tile)%t_xmax,     &
-        chunk%tiles(tile)%t_ymin,     &
-        chunk%tiles(tile)%t_ymax,     &
-        g_small,                       &
-        g_big,                         &
-        dtmin,                         &
-        dtc_safe,                      &
-        dtu_safe,                      &
-        dtv_safe,                      &
-        dtdiv_safe,                    &
-        chunk%tiles(tile)%field%xarea,     &
-        chunk%tiles(tile)%field%yarea,     &
-        chunk%tiles(tile)%field%cellx,     &
-        chunk%tiles(tile)%field%celly,     &
-        chunk%tiles(tile)%field%celldx,    &
-        chunk%tiles(tile)%field%celldy,    &
-        chunk%tiles(tile)%field%volume,    &
-        chunk%tiles(tile)%field%density0,  &
-        chunk%tiles(tile)%field%energy0,   &
-        chunk%tiles(tile)%field%pressure,  &
-        chunk%tiles(tile)%field%viscosity, &
-        chunk%tiles(tile)%field%soundspeed,&
-        chunk%tiles(tile)%field%xvel0,     &
-        chunk%tiles(tile)%field%yvel0,     &
-        chunk%tiles(tile)%field%work_array1,&
-        local_dt,                      &
-        l_control,                     &
-        xl_pos,                        &
-        yl_pos,                        &
-        jldt,                          &
-        kldt,                          &
-        small                          )
-    ENDIF
+
 
 
     IF(l_control.EQ.1) local_control='sound'

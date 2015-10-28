@@ -86,180 +86,212 @@ CONTAINS
 
     INTEGER :: j,k
 
+!$ACC DATA          &
+!$ACC PRESENT(density0, energy0, pressure, viscosity, soundspeed, density1, energy1, xvel0, yvel0, xvel1, yvel1, vol_flux_x, mass_flux_x, vol_flux_y, mass_flux_y)    &
+!$ACC PRESENT(left_density0, left_energy0, left_pressure, left_viscosity, left_soundspeed, left_density1, left_energy1, left_xvel0, left_yvel0, left_xvel1, left_yvel1, left_vol_flux_x, left_mass_flux_x, left_vol_flux_y, left_mass_flux_y)
 
-    !$OMP PARALLEL PRIVATE(j)
 
     ! Density 0
    
 
     IF(fields(FIELD_DENSITY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           density0(x_min-j,k)=left_density0(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Density 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           density1(x_min-j,k)=left_density1(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
    
     ! Energy 0
     IF(fields(FIELD_ENERGY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           energy0(x_min-j,k)=left_energy0(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Energy 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           energy1(x_min-j,k)=left_energy1(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
   
     ! Pressure
     IF(fields(FIELD_PRESSURE).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           pressure(x_min-j,k)=left_pressure(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Viscocity
     IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           viscosity(x_min-j,k)=left_viscosity(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Soundspeed
     IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           soundspeed(x_min-j,k)=left_soundspeed(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
 
     ! XVEL 0
     IF(fields(FIELD_XVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           xvel0(x_min-j,k)=left_xvel0(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! XVEL 1
     IF(fields(FIELD_XVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           xvel1(x_min-j,k)=left_xvel1(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 0
     IF(fields(FIELD_YVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           yvel0(x_min-j,k)=left_yvel0(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 1
     IF(fields(FIELD_YVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           yvel1(x_min-j,k)=left_yvel1(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_X
     IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           vol_flux_x(x_min-j,k)=left_vol_flux_x(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_X
     IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           mass_flux_x(x_min-j,k)=left_mass_flux_x(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_Y
     IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           vol_flux_y(x_min-j,k)=left_vol_flux_y(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_Y
     IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           mass_flux_y(x_min-j,k)=left_mass_flux_y(left_xmax+1-j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END DATA
 
   END SUBROUTINE update_tile_halo_l_kernel
 
@@ -322,178 +354,210 @@ CONTAINS
 
     INTEGER :: j,k
 
+!$ACC DATA          &
+!$ACC PRESENT(density0, energy0, pressure, viscosity, soundspeed, density1, energy1, xvel0, yvel0, xvel1, yvel1, vol_flux_x, mass_flux_x, vol_flux_y, mass_flux_y)    &
+!$ACC PRESENT(right_density0, right_energy0, right_pressure, right_viscosity, right_soundspeed, right_density1, right_energy1, right_xvel0, right_yvel0, right_xvel1, right_yvel1, right_vol_flux_x, right_mass_flux_x, right_vol_flux_y, right_mass_flux_y)
 
-    !$OMP PARALLEL PRIVATE(j)
 
     ! Density 0
     IF(fields(FIELD_DENSITY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           density0(x_max+j,k)=right_density0(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Density 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           density1(x_max+j,k)=right_density1(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
    
     ! Energy 0
     IF(fields(FIELD_ENERGY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           energy0(x_max+j,k)=right_energy0(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Energy 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           energy1(x_max+j,k)=right_energy1(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
   
     ! Pressure
     IF(fields(FIELD_PRESSURE).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           pressure(x_max+j,k)=right_pressure(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Viscocity
     IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           viscosity(x_max+j,k)=right_viscosity(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Soundspeed
     IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           soundspeed(x_max+j,k)=right_soundspeed(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
 
     ! XVEL 0
     IF(fields(FIELD_XVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           xvel0(x_max+1+j,k)=right_xvel0(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! XVEL 1
     IF(fields(FIELD_XVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           xvel1(x_max+1+j,k)=right_xvel1(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 0
     IF(fields(FIELD_YVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           yvel0(x_max+1+j,k)=right_yvel0(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 1
     IF(fields(FIELD_YVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           yvel1(x_max+1+j,k)=right_yvel1(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_X
     IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           vol_flux_x(x_max+1+j,k)=right_vol_flux_x(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_X
     IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           mass_flux_x(x_max+1+j,k)=right_mass_flux_x(right_xmin+1-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_Y
     IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           vol_flux_y(x_max+j,k)=right_vol_flux_y(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_Y
     IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=y_min-depth,y_max+1+depth
+!$ACC LOOP INDEPENDENT
         DO j=1,depth
           mass_flux_y(x_max+j,k)=right_mass_flux_y(right_xmin-1+j,k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END DATA
 
   END SUBROUTINE update_tile_halo_r_kernel
 
@@ -560,177 +624,210 @@ CONTAINS
     INTEGER :: j,k
 
 
-    !$OMP PARALLEL PRIVATE(j)
+!$ACC DATA          &
+!$ACC PRESENT(density0, energy0, pressure, viscosity, soundspeed, density1, energy1, xvel0, yvel0, xvel1, yvel1, vol_flux_x, mass_flux_x, vol_flux_y, mass_flux_y)    &
+!$ACC PRESENT(top_density0, top_energy0, top_pressure, top_viscosity, top_soundspeed, top_density1, top_energy1, top_xvel0, top_yvel0, top_xvel1, top_yvel1, top_vol_flux_x, top_mass_flux_x, top_vol_flux_y, top_mass_flux_y)
+
 
     ! Density 0
     IF(fields(FIELD_DENSITY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           density0(j,y_max+k)=top_density0(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Density 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           density1(j,y_max+k)=top_density1(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
    
     ! Energy 0
     IF(fields(FIELD_ENERGY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           energy0(j,y_max+k)=top_energy0(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Energy 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           energy1(j,y_max+k)=top_energy1(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
   
     ! Pressure
     IF(fields(FIELD_PRESSURE).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           pressure(j,y_max+k)=top_pressure(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Viscocity
     IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           viscosity(j,y_max+k)=top_viscosity(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Soundspeed
     IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           soundspeed(j,y_max+k)=top_soundspeed(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
 
     ! XVEL 0
     IF(fields(FIELD_XVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           xvel0(j,y_max+1+k)=top_xvel0(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! XVEL 1
     IF(fields(FIELD_XVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           xvel1(j,y_max+1+k)=top_xvel1(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 0
     IF(fields(FIELD_YVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           yvel0(j,y_max+1+k)=top_yvel0(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 1
     IF(fields(FIELD_YVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           yvel1(j,y_max+1+k)=top_yvel1(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_X
     IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           vol_flux_x(j,y_max+k)=top_vol_flux_x(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_X
     IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           mass_flux_x(j,y_max+k)=top_mass_flux_x(j,top_ymin-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_Y
     IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           vol_flux_y(j,y_max+1+k)=top_vol_flux_y(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_Y
     IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           mass_flux_y(j,y_max+1+k)=top_mass_flux_y(j,top_ymin+1-1+k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END DATA
 
   END SUBROUTINE update_tile_halo_t_kernel
 
@@ -802,177 +899,211 @@ CONTAINS
     INTEGER :: j,k
 
 
-    !$OMP PARALLEL PRIVATE(j)
+!$ACC DATA          &
+!$ACC PRESENT(density0, energy0, pressure, viscosity, soundspeed, density1, energy1, xvel0, yvel0, xvel1, yvel1, vol_flux_x, mass_flux_x, vol_flux_y, mass_flux_y)    &
+!$ACC PRESENT(bottom_density0, bottom_energy0, bottom_pressure, bottom_viscosity, bottom_soundspeed, bottom_density1, bottom_energy1 ) &
+!$ACC PRESENT(bottom_xvel0, bottom_yvel0, bottom_xvel1, bottom_yvel1, bottom_vol_flux_x, bottom_mass_flux_x, bottom_vol_flux_y, bottom_mass_flux_y)
+
 
     ! Density 0
     IF(fields(FIELD_DENSITY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           density0(j,y_min-k)=bottom_density0(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Density 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           density1(j,y_min-k)=bottom_density1(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
    
     ! Energy 0
     IF(fields(FIELD_ENERGY0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           energy0(j,y_min-k)=bottom_energy0(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Energy 1
     IF(fields(FIELD_DENSITY1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           energy1(j,y_min-k)=bottom_energy1(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
   
     ! Pressure
     IF(fields(FIELD_PRESSURE).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           pressure(j,y_min-k)=bottom_pressure(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Viscocity
     IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           viscosity(j,y_min-k)=bottom_viscosity(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! Soundspeed
     IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           soundspeed(j,y_min-k)=bottom_soundspeed(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
 
     ! XVEL 0
     IF(fields(FIELD_XVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           xvel0(j,y_min-k)=bottom_xvel0(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! XVEL 1
     IF(fields(FIELD_XVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           xvel1(j,y_min-k)=bottom_xvel1(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 0
     IF(fields(FIELD_YVEL0).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           yvel0(j,y_min-k)=bottom_yvel0(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! YVEL 1
     IF(fields(FIELD_YVEL1).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           yvel1(j,y_min-k)=bottom_yvel1(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_X
     IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           vol_flux_x(j,y_min-k)=bottom_vol_flux_x(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_X
     IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+1+depth
           mass_flux_x(j,y_min-k)=bottom_mass_flux_x(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! VOL_FLUX_Y
     IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           vol_flux_y(j,y_min-k)=bottom_vol_flux_y(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
     ! MASS_FLUX_Y
     IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-      !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
       DO k=1,depth
+!$ACC LOOP INDEPENDENT
         DO j=x_min-depth, x_max+depth
           mass_flux_y(j,y_min-k)=bottom_mass_flux_y(j,bottom_ymax+1-k)
         ENDDO
       ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
     ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END DATA
 
   END SUBROUTINE update_tile_halo_b_kernel
 

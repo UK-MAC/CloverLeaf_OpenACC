@@ -53,11 +53,15 @@ CONTAINS
     REAL(KIND=8)          :: nodal_mass,stepbymass_s,halfdt
 
     halfdt=0.5_8*dt
+!$ACC DATA &
+!$ACC PRESENT(density0,volume,pressure,viscosity,xarea,yarea,xvel0,yvel0)&
+!$ACC PRESENT(xvel1,yvel1)
 
-    !$OMP PARALLEL
+!$ACC KERNELS
 
-    !$OMP DO PRIVATE(j,k,stepbymass_s)
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max+1
+!$ACC LOOP INDEPENDENT PRIVATE(j,k,stepbymass_s)
       DO j=x_min,x_max+1
         stepbymass_s=halfdt/((density0(j-1,k-1)*volume(j-1,k-1)  &
           +density0(j  ,k-1)*volume(j  ,k-1)  &
@@ -75,9 +79,11 @@ CONTAINS
           +yarea(j-1,k  )*(viscosity(j-1,k  )-viscosity(j-1,k-1)))
       ENDDO
     ENDDO
-  !$OMP END DO
 
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+!$ACC WAIT
+
+!$ACC END DATA
 
   END SUBROUTINE accelerate_kernel
 

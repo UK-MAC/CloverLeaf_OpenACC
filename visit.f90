@@ -103,6 +103,20 @@ SUBROUTINE visit
 
   DO tile = 1, tiles_per_chunk
     IF(chunk%task.EQ.parallel%task) THEN
+
+      CALL update_host_data(chunk%tiles(tile)%t_xmin,                   &
+        chunk%tiles(tile)%t_xmax,                   &
+        chunk%tiles(tile)%t_ymin,                   &
+        chunk%tiles(tile)%t_ymax,                   &
+        chunk%tiles(tile)%field%density0,                &
+        chunk%tiles(tile)%field%energy0,                 &
+        chunk%tiles(tile)%field%pressure,                &
+        chunk%tiles(tile)%field%viscosity,               &
+        chunk%tiles(tile)%field%xvel0,                   &
+        chunk%tiles(tile)%field%yvel0,                   &
+        chunk%tiles(tile)%field%vertexx,                 &
+        chunk%tiles(tile)%field%vertexy)
+
       nxc=chunk%tiles(tile)%t_xmax-chunk%tiles(tile)%t_xmin+1
       nyc=chunk%tiles(tile)%t_ymax-chunk%tiles(tile)%t_ymin+1
       nxv=nxc+1
@@ -178,3 +192,46 @@ SUBROUTINE visit
   IF(profiler_on) profiler%visit=profiler%visit+(timer()-kernel_time)
 
 END SUBROUTINE visit
+
+SUBROUTINE update_host_data(x_min,x_max,y_min,y_max, &
+    density0,                &
+    energy0,                 &
+    pressure,                &
+    viscosity,               &
+    xvel0,                   &
+    yvel0,                   &
+    vertexx,                 &
+    vertexy                  )
+
+    IMPLICIT NONE
+
+    INTEGER :: x_min,x_max,y_min,y_max
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+2,y_min-2:y_max+2) :: density0
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+2,y_min-2:y_max+2) :: energy0
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+2,y_min-2:y_max+2) :: pressure
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+2,y_min-2:y_max+2) :: viscosity
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+3,y_min-2:y_max+3) :: xvel0
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+3,y_min-2:y_max+3) :: yvel0
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+3) :: vertexx
+    REAL(KIND=8), DIMENSION(x_min-2:x_max+3) :: vertexy
+
+!$ACC DATA &
+!$ACC PRESENT(density0)  &
+!$ACC PRESENT(energy0)   &
+!$ACC PRESENT(pressure)  &
+!$ACC PRESENT(viscosity) &
+!$ACC PRESENT(xvel0)     &
+!$ACC PRESENT(yvel0)     &
+!$ACC PRESENT(vertexx)   &
+!$ACC PRESENT(vertexy)
+!$ACC UPDATE HOST(density0)
+!$ACC UPDATE HOST(energy0)
+!$ACC UPDATE HOST(pressure)
+!$ACC UPDATE HOST(viscosity)
+!$ACC UPDATE HOST(xvel0)
+!$ACC UPDATE HOST(yvel0)
+!$ACC UPDATE HOST(vertexx)
+!$ACC UPDATE HOST(vertexy)
+!$ACC END DATA
+
+END SUBROUTINE update_host_data

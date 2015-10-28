@@ -1,6 +1,6 @@
-# CloverLeaf_ref
+# CloverLeaf_OpenACC
 
-This is the reference version of CloverLeaf version 1.3. 
+This is the OpenACC version of CloverLeaf version 1.3. 
 
 ## Release Notes
 
@@ -10,11 +10,11 @@ CloverLeaf 1.3 contains a number of optimisations over previous releases.
 These include a number of loop fusion optimisations and the use of scalar variables over work arrays.
 Overall this improves cache efficiency.
 
-This version also contains some support for explicit tiling.
-This is activated through the two input deck parameters:
+This OpenACC version is based off of the CAPS Kernels version.
 
-* `tiles_per_chunk` To specify how many tiles per MPI ranks there are.
-* `tiles_per_problem` To specify how many global tiles there are, this is rounded down to be an even number per MPI rank.
+Due to limitations in data movement for Fortran data types, this version does not currently support tiling.
+
+
 
 
 ## Performance

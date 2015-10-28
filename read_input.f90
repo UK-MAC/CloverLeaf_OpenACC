@@ -280,4 +280,8 @@ SUBROUTINE read_input()
     states(n)%ymax=states(n)%ymax-(dy/100.0_8)
   ENDDO
 
+  ! Have to force the number of tiles to 1 for openacc
+  ! Not worked out a way of doing the data copy with multiple tiles
+  tiles_per_chunk=1
+
 END SUBROUTINE read_input

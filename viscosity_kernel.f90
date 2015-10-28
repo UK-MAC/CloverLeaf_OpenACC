@@ -47,10 +47,14 @@ CONTAINS
     REAL(KIND=8)  :: ugrad,vgrad,grad2,pgradx,pgrady,pgradx2,pgrady2,grad     &
       ,ygrad,pgrad,xgrad,div,strain2,limiter,dirx,diry
 
-    !$OMP PARALLEL
+!$ACC DATA &
+!$ACC PRESENT(density0,pressure,viscosity,xvel0,yvel0)
 
-    !$OMP DO PRIVATE(ugrad,vgrad,div,strain2,pgradx,pgrady,pgradx2,pgrady2,limiter,pgrad,xgrad,ygrad,grad,grad2,dirx,diry)
+!$ACC KERNELS
+
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(ugrad,vgrad,div,strain2,pgradx,pgrady,pgradx2,pgrady2,limiter,pgrad,xgrad,ygrad,grad,grad2,dirx,diry)
       DO j=x_min,x_max
         ugrad=(xvel0(j+1,k  )+xvel0(j+1,k+1))-(xvel0(j  ,k  )+xvel0(j  ,k+1))
 
@@ -90,9 +94,11 @@ CONTAINS
 
       ENDDO
     ENDDO
-  !$OMP END DO
 
-  !$OMP END PARALLEL
+
+!$ACC END KERNELS
+
+!$ACC END DATA
 
   END SUBROUTINE viscosity_kernel
 

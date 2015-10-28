@@ -38,18 +38,22 @@ CONTAINS
 
     INTEGER :: j,k
 
-    !$OMP PARALLEL
+!$ACC DATA &
+!$ACC PRESENT(density0,energy0,density1,energy1)
+!$ACC KERNELS
 
-    !$OMP DO
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max
         density1(j,k)=density0(j,k)
         energy1(j,k)=energy0(j,k)
       ENDDO
     ENDDO
-  !$OMP END DO
 
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+!$ACC END DATA
+
 
   END SUBROUTINE revert_kernel
 

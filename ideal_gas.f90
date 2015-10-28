@@ -36,7 +36,6 @@ CONTAINS
     LOGICAl :: predict
 
 
-    IF(use_fortran_kernels) THEN
       IF(.NOT.predict) THEN
         CALL ideal_gas_kernel(chunk%tiles(tile)%t_xmin,    &
           chunk%tiles(tile)%t_xmax,      &
@@ -59,29 +58,7 @@ CONTAINS
 
       ENDIF
 
-    ELSEIF(use_C_kernels) THEN
-      IF(.NOT.predict) THEN
-        CALL ideal_gas_kernel_c(chunk%tiles(tile)%t_xmin,    &
-          chunk%tiles(tile)%t_xmax,      &
-          chunk%tiles(tile)%t_ymin,      &
-          chunk%tiles(tile)%t_ymax,      &
-          chunk%tiles(tile)%field%density0,   &
-          chunk%tiles(tile)%field%energy0,    &
-          chunk%tiles(tile)%field%pressure,   &
-          chunk%tiles(tile)%field%soundspeed  )
 
-      ELSE
-        CALL ideal_gas_kernel_c(chunk%tiles(tile)%t_xmin,    &
-          chunk%tiles(tile)%t_xmax,      &
-          chunk%tiles(tile)%t_ymin,      &
-          chunk%tiles(tile)%t_ymax,      &
-          chunk%tiles(tile)%field%density1,   &
-          chunk%tiles(tile)%field%energy1,    &
-          chunk%tiles(tile)%field%pressure,   &
-          chunk%tiles(tile)%field%soundspeed  )
-
-      ENDIF
-    ENDIF
 
   END SUBROUTINE ideal_gas
 

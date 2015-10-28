@@ -46,12 +46,16 @@ CONTAINS
 
     INTEGER :: j,k
 
-    !$OMP PARALLEL
+
+!$ACC DATA &
+!$ACC PRESENT(xvel0,yvel0,xvel1,yvel1,xarea,yarea,vol_flux_x,vol_flux_y)
 
     ! Note that the loops calculate one extra flux than required, but this
     ! allows loop fusion that improves performance
-    !$OMP DO
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max+1
+!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max+1
         vol_flux_x(j,k)=0.25_8*dt*xarea(j,k)                  &
           *(xvel0(j,k)+xvel0(j,k+1)+xvel1(j,k)+xvel1(j,k+1))
@@ -59,9 +63,8 @@ CONTAINS
           *(yvel0(j,k)+yvel0(j+1,k)+yvel1(j,k)+yvel1(j+1,k))
       ENDDO
     ENDDO
-  !$OMP END DO
-
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE flux_calc_kernel
 

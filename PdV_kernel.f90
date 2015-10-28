@@ -64,13 +64,19 @@ CONTAINS
     REAL(KIND=8)  :: right_flux,left_flux,top_flux,bottom_flux,total_flux
     REAL(KIND=8)  :: volume_change_s
 
-    !$OMP PARALLEL
+!$ACC DATA &
+!$ACC PRESENT(density0,energy0,pressure,viscosity,volume,xarea) &
+!$ACC PRESENT(xvel0,yarea,yvel0) &
+!$ACC PRESENT(density1,energy1) &
+!$ACC PRESENT(xvel1,yvel1) &
+!$ACC PRESENT(volume_change)
 
     IF(predict)THEN
+!$ACC KERNELS
 
-      !$OMP DO PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume, &
-      !$OMP            energy_change,recip_volume,volume_change_s)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume,energy_change,recip_volume,volume_change_s)
         DO j=x_min,x_max
 
           left_flux=  (xarea(j  ,k  )*(xvel0(j  ,k  )+xvel0(j  ,k+1)                     &
@@ -99,13 +105,15 @@ CONTAINS
 
         ENDDO
       ENDDO
-    !$OMP END DO
+
+!$ACC END KERNELS
 
     ELSE
+!$ACC KERNELS
 
-      !$OMP DO PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume, &
-      !$OMP            energy_change,recip_volume,volume_change_s)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume,energy_change,recip_volume,volume_change_s)
         DO j=x_min,x_max
 
           left_flux=  (xarea(j  ,k  )*(xvel0(j  ,k  )+xvel0(j  ,k+1)                     &
@@ -134,11 +142,13 @@ CONTAINS
 
         ENDDO
       ENDDO
-    !$OMP END DO
 
-    ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+  ENDIF
+!$ACC END DATA
+
+
 
   END SUBROUTINE PdV_kernel
 

@@ -42,9 +42,12 @@ CONTAINS
 
     REAL(KIND=8) :: sound_speed_squared,v,pressurebyenergy,pressurebyvolume
 
-    !$OMP PARALLEL
-    !$OMP DO PRIVATE(v,pressurebyenergy,pressurebyvolume,sound_speed_squared)
+!$ACC DATA &
+!$ACC PRESENT(density,energy,pressure,soundspeed)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(v,pressurebyenergy,pressurebyvolume,sound_speed_squared)
       DO j=x_min,x_max
         v=1.0_8/density(j,k)
         pressure(j,k)=(1.4_8-1.0_8)*density(j,k)*energy(j,k)
@@ -54,8 +57,9 @@ CONTAINS
         soundspeed(j,k)=SQRT(sound_speed_squared)
       ENDDO
     ENDDO
-  !$OMP END DO
-  !$OMP END PARALLEL
+
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE ideal_gas_kernel
 

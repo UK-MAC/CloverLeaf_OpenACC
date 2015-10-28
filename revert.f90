@@ -32,7 +32,6 @@ CONTAINS
 
     INTEGER :: tile
 
-    IF(use_fortran_kernels) THEN
 
       DO tile=1,tiles_per_chunk
 
@@ -47,21 +46,7 @@ CONTAINS
 
 
       ENDDO
-    ELSEIF(use_C_kernels) THEN
-      DO tile=1,tiles_per_chunk
 
-        CALL revert_kernel_c(chunk%tiles(tile)%t_xmin,   &
-          chunk%tiles(tile)%t_xmax,     &
-          chunk%tiles(tile)%t_ymin,     &
-          chunk%tiles(tile)%t_ymax,     &
-          chunk%tiles(tile)%field%density0,  &
-          chunk%tiles(tile)%field%density1,  &
-          chunk%tiles(tile)%field%energy0,   &
-          chunk%tiles(tile)%field%energy1    )
-
-
-      ENDDO
-    ENDIF
 
 
   END SUBROUTINE revert

@@ -82,44 +82,52 @@ CONTAINS
 
     ! State 1 is always the background state
 
-    !$OMP PARALLEL SHARED(x_cent,y_cent)
-    !$OMP DO
+!$ACC DATA
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
       DO j=x_min-2,x_max+2
         energy0(j,k)=state_energy(1)
       ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+
+!$ACC LOOP INDEPENDENT
     DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
       DO j=x_min-2,x_max+2
         density0(j,k)=state_density(1)
       ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+
+!$ACC LOOP INDEPENDENT
     DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
       DO j=x_min-2,x_max+2
         xvel0(j,k)=state_xvel(1)
       ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+
+!$ACC LOOP INDEPENDENT
     DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
       DO j=x_min-2,x_max+2
         yvel0(j,k)=state_yvel(1)
       ENDDO
     ENDDO
-    !$OMP END DO
+!$ACC END KERNELS
+
 
     DO state=2,number_of_states
 
+!$ACC KERNELS
       ! Could the velocity setting be thread unsafe?
       x_cent=state_xmin(state)
       y_cent=state_ymin(state)
 
-      !$OMP DO PRIVATE(radius,jt,kt)
+!$ACC LOOP INDEPENDENT
       DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT PRIVATE(radius,jt,kt)
         DO j=x_min-2,x_max+2
           IF(state_geometry(state).EQ.g_rect ) THEN
             IF(vertexx(j+1).GE.state_xmin(state).AND.vertexx(j).LT.state_xmax(state)) THEN
@@ -160,11 +168,14 @@ CONTAINS
           ENDIF
         ENDDO
       ENDDO
-    !$OMP END DO
 
+
+!$ACC END KERNELS
     ENDDO
 
-  !$OMP END PARALLEL
+
+
+!$ACC END DATA
 
   END SUBROUTINE generate_chunk_kernel
 

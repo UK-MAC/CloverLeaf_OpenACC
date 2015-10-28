@@ -78,33 +78,40 @@ CONTAINS
     REAL(KIND=8) :: one_by_six=1.0_8/6.0_8
     REAL(KIND=8) :: pre_mass_s,post_mass_s,post_ener_s,advec_vol_s
 
-    !$OMP PARALLEL
+!$ACC DATA &
+!$ACC PRESENT(density1,energy1) &
+!$ACC PRESENT(vol_flux_x,vol_flux_y,volume,mass_flux_x,mass_flux_y,vertexdx,vertexdy) &
+!$ACC PRESENT(pre_vol,post_vol,ener_flux)
+
+!$ACC KERNELS
 
     IF(dir.EQ.g_xdir) THEN
 
       IF(sweep_number.EQ.1)THEN
-        !$OMP DO
+
+!$ACC LOOP INDEPENDENT
         DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
           DO j=x_min-2,x_max+2
             pre_vol(j,k)=volume(j,k)+(vol_flux_x(j+1,k  )-vol_flux_x(j,k)+vol_flux_y(j  ,k+1)-vol_flux_y(j,k))
             post_vol(j,k)=pre_vol(j,k)-(vol_flux_x(j+1,k  )-vol_flux_x(j,k))
           ENDDO
         ENDDO
-      !$OMP END DO
       ELSE
-        !$OMP DO
+!$ACC LOOP INDEPENDENT
         DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
           DO j=x_min-2,x_max+2
             pre_vol(j,k)=volume(j,k)+vol_flux_x(j+1,k)-vol_flux_x(j,k)
             post_vol(j,k)=volume(j,k)
           ENDDO
         ENDDO
-      !$OMP END DO
+
       ENDIF
 
-      !$OMP DO PRIVATE(upwind,donor,downwind,dif,sigmat,sigma3,sigma4,sigmav,sigma,sigmam, &
-      !$OMP            diffuw,diffdw,limiter,wind)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(upwind,donor,downwind,dif,sigmat,sigma3,sigma4,sigmav,sigma,sigmam, diffuw,diffdw,limiter,wind)
         DO j=x_min,x_max+2
 
           IF(vol_flux_x(j,k).GT.0.0)THEN
@@ -154,10 +161,10 @@ CONTAINS
 
         ENDDO
       ENDDO
-      !$OMP END DO
 
-      !$OMP DO PRIVATE(pre_mass_s,post_mass_s,post_ener_s,advec_vol_s)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(pre_mass_s,post_mass_s,post_ener_s,advec_vol_s)
         DO j=x_min,x_max
           pre_mass_s=density1(j,k)*pre_vol(j,k)
           post_mass_s=pre_mass_s+mass_flux_x(j,k)-mass_flux_x(j+1,k)
@@ -167,33 +174,32 @@ CONTAINS
           energy1(j,k)=post_ener_s
         ENDDO
       ENDDO
-    !$OMP END DO
 
     ELSEIF(dir.EQ.g_ydir) THEN
 
       IF(sweep_number.EQ.1)THEN
-        !$OMP DO
+!$ACC LOOP INDEPENDENT
         DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
           DO j=x_min-2,x_max+2
             pre_vol(j,k)=volume(j,k)+(vol_flux_y(j  ,k+1)-vol_flux_y(j,k)+vol_flux_x(j+1,k  )-vol_flux_x(j,k))
             post_vol(j,k)=pre_vol(j,k)-(vol_flux_y(j  ,k+1)-vol_flux_y(j,k))
           ENDDO
         ENDDO
-      !$OMP END DO
       ELSE
-        !$OMP DO
+!$ACC LOOP INDEPENDENT
         DO k=y_min-2,y_max+2
+!$ACC LOOP INDEPENDENT
           DO j=x_min-2,x_max+2
             pre_vol(j,k)=volume(j,k)+vol_flux_y(j  ,k+1)-vol_flux_y(j,k)
             post_vol(j,k)=volume(j,k)
           ENDDO
         ENDDO
-      !$OMP END DO
       ENDIF
 
-      !$OMP DO PRIVATE(upwind,donor,downwind,dif,sigmat,sigma3,sigma4,sigmav,sigma,sigmam, &
-      !$OMP            diffuw,diffdw,limiter,wind)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max+2
+!$ACC LOOP INDEPENDENT PRIVATE(upwind,donor,downwind,dif,sigmat,sigma3,sigma4,sigmav,sigma,sigmam,diffuw,diffdw,limiter,wind)
         DO j=x_min,x_max
 
           IF(vol_flux_y(j,k).GT.0.0)THEN
@@ -242,10 +248,10 @@ CONTAINS
 
         ENDDO
       ENDDO
-      !$OMP END DO
 
-      !$OMP DO PRIVATE(pre_mass_s,post_mass_s,post_ener_s,advec_vol_s)
+!$ACC LOOP INDEPENDENT
       DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT PRIVATE(pre_mass_s,post_mass_s,post_ener_s,advec_vol_s)
         DO j=x_min,x_max
           pre_mass_s=density1(j,k)*pre_vol(j,k)
           post_mass_s=pre_mass_s+mass_flux_y(j,k)-mass_flux_y(j,k+1)
@@ -255,11 +261,12 @@ CONTAINS
           energy1(j,k)=post_ener_s
         ENDDO
       ENDDO
-    !$OMP END DO
 
     ENDIF
 
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+
+!$ACC END DATA
 
   END SUBROUTINE advec_cell_kernel
 

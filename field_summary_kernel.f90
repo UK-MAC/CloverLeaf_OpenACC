@@ -50,10 +50,13 @@ CONTAINS
     ie=0.0
     ke=0.0
     press=0.0
+!$ACC DATA &
+!$ACC PRESENT(volume,density0,energy0,pressure,xvel0,yvel0)
+!$ACC KERNELS
 
-    !$OMP PARALLEL
-    !$OMP DO PRIVATE(vsqrd,cell_vol,cell_mass) REDUCTION(+ : vol,mass,press,ie,ke)
+!$ACC LOOP INDEPENDENT REDUCTION(+:vol) REDUCTION(+:mass) REDUCTION(+:press) REDUCTION(+:ie) REDUCTION(+:ke), private(vsqrd,cell_vol,cell_mass,jv,kv) GANG(128)
     DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT REDUCTION(+:vol) REDUCTION(+:mass) REDUCTION(+:press) REDUCTION(+:ie) REDUCTION(+:ke)
       DO j=x_min,x_max
         vsqrd=0.0
         DO kv=k,k+1
@@ -70,8 +73,11 @@ CONTAINS
         press=press+cell_vol*pressure(j,k)
       ENDDO
     ENDDO
-  !$OMP END DO
-  !$OMP END PARALLEL
+
+
+!$ACC END KERNELS
+
+!$ACC END DATA
 
   END SUBROUTINE field_summary_kernel
 

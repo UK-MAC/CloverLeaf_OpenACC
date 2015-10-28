@@ -44,26 +44,33 @@ CONTAINS
 
     INTEGER :: j,k
 
-    !$OMP PARALLEL
-    !$OMP DO
+
+!$ACC DATA &
+!$ACC PRESENT(density0,density1,energy0,energy1,xvel0,xvel1,yvel0,yvel1)
+
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max
+!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max
         density0(j,k)=density1(j,k)
         energy0(j,k)=energy1(j,k)
       ENDDO
     ENDDO
-    !$OMP END DO
 
-    !$OMP DO
+
+!$ACC LOOP INDEPENDENT
     DO k=y_min,y_max+1
+!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max+1
         xvel0(j,k)=xvel1(j,k)
         yvel0(j,k)=yvel1(j,k)
       ENDDO
     ENDDO
-  !$OMP END DO
 
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+
+!$ACC END DATA
 
   END SUBROUTINE reset_field_kernel
 
