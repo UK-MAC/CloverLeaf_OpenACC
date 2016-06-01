@@ -58,14 +58,20 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
+!$ACC DATA &
+!$ACC PRESENT(left_snd_buffer, field)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
+!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         left_snd_buffer(index)=field(x_min+x_inc-1+j,k)
       ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
+!$ACC END KERNELS
+!$ACC UPDATE HOST(left_snd_buffer)
+!$ACC END DATA
 
   END SUBROUTINE clover_pack_message_left
 
@@ -104,14 +110,20 @@ CONTAINS
       y_inc=1
     ENDIF
 
-    !$OMP PARALLEL DO PRIVATE(index)
+!$ACC DATA &
+!$ACC PRESENT (left_rcv_buffer, field)
+!$ACC UPDATE DEVICE (left_rcv_buffer)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
+!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_min-j,k)=left_rcv_buffer(index)
       ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE clover_unpack_message_left
 
@@ -149,15 +161,20 @@ CONTAINS
       x_inc=0
       y_inc=1
     ENDIF
-
-    !$OMP PARALLEL DO PRIVATE(index)
+!$ACC DATA &
+!$ACC PRESENT(right_snd_buffer, field)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
+!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         right_snd_buffer(index)=field(x_max+1-j,k)
       ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
+!$ACC END KERNELS
+!$ACC UPDATE HOST(right_snd_buffer)
+!$ACC END DATA
 
   END SUBROUTINE clover_pack_message_right
 
@@ -195,15 +212,20 @@ CONTAINS
       x_inc=0
       y_inc=1
     ENDIF
-
-    !$OMP PARALLEL DO PRIVATE(index)
+!$ACC DATA &
+!$ACC PRESENT (right_rcv_buffer, field)
+!$ACC UPDATE DEVICE (right_rcv_buffer)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
+!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_max+x_inc+j,k)=right_rcv_buffer(index)
       ENDDO
     ENDDO
-  !$OMP END PARALLEL DO
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE clover_unpack_message_right
 
@@ -242,14 +264,20 @@ CONTAINS
       y_inc=1
     ENDIF
 
+!$ACC DATA &
+!$ACC PRESENT(top_snd_buffer, field)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
+!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         top_snd_buffer(index)=field(j,y_max+1-k)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
+!$ACC END KERNELS
+!$ACC UPDATE HOST(top_snd_buffer)
+!$ACC END DATA
   
   END SUBROUTINE clover_pack_message_top
 
@@ -287,16 +315,21 @@ CONTAINS
       x_inc=0
       y_inc=1
     ENDIF
-
+!$ACC DATA &
+!$ACC PRESENT (top_rcv_buffer, field)
+!$ACC UPDATE DEVICE (top_rcv_buffer)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
+!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j + depth+(k-1)*(x_max+x_inc+(2*depth))
         field(j,y_max+y_inc+k)=top_rcv_buffer(index)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE clover_unpack_message_top
 
@@ -335,15 +368,21 @@ CONTAINS
       y_inc=1
     ENDIF
 
+!$ACC DATA &
+!$ACC PRESENT(bottom_snd_buffer, field)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=1,depth
-      !$OMP PARALLEL DO PRIVATE(index)
+!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
         bottom_snd_buffer(index)=field(j,y_min+y_inc-1+k)
       ENDDO
-    !$OMP END PARALLEL DO
     ENDDO
+!$ACC END KERNELS
+!$ACC UPDATE HOST(bottom_snd_buffer)
+!$ACC END DATA
 
   END SUBROUTINE clover_pack_message_bottom
 
@@ -381,18 +420,21 @@ CONTAINS
       x_inc=0
       y_inc=1
     ENDIF
-
-    !$OMP PARALLEL
+!$ACC DATA &
+!$ACC PRESENT (bottom_rcv_buffer, field)
+!$ACC UPDATE DEVICE (bottom_rcv_buffer)
+!$ACC KERNELS
+!$ACC LOOP INDEPENDENT
     DO k=1,depth
-      !$OMP DO PRIVATE(index)
+!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
         field(j,y_min-k)=bottom_rcv_buffer(index)
       ENDDO
-    !$OMP END DO
     ENDDO
-  !$OMP END PARALLEL
+!$ACC END KERNELS
+!$ACC END DATA
 
   END SUBROUTINE clover_unpack_message_bottom
 

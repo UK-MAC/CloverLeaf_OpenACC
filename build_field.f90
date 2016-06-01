@@ -97,8 +97,7 @@ SUBROUTINE build_field()
     ! are allocated. This prevents first touch overheads in the main code
     ! cycle which can skew timings in the first step
 
-    !$OMP PARALLEL
-    !$OMP DO
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+3
       DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+3
         chunk%tiles(tile)%field%work_array1(j,k)=0.0
@@ -115,9 +114,9 @@ SUBROUTINE build_field()
         chunk%tiles(tile)%field%yvel1(j,k)=0.0
       ENDDO
     ENDDO
-    !$OMP END DO
+    
 
-    !$OMP DO
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+2
       DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+2
         chunk%tiles(tile)%field%density0(j,k)=0.0
@@ -130,9 +129,9 @@ SUBROUTINE build_field()
         chunk%tiles(tile)%field%volume(j,k)=0.0
       ENDDO
     ENDDO
-    !$OMP END DO
+    
 
-    !$OMP DO
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+2
       DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+3
         chunk%tiles(tile)%field%vol_flux_x(j,k)=0.0
@@ -140,8 +139,8 @@ SUBROUTINE build_field()
         chunk%tiles(tile)%field%xarea(j,k)=0.0
       ENDDO
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+    
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+3
       DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+2
         chunk%tiles(tile)%field%vol_flux_y(j,k)=0.0
@@ -149,36 +148,35 @@ SUBROUTINE build_field()
         chunk%tiles(tile)%field%yarea(j,k)=0.0
       ENDDO
     ENDDO
-    !$OMP END DO
+    
 
 
-    !$OMP DO
+    
     DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+2
       chunk%tiles(tile)%field%cellx(j)=0.0
       chunk%tiles(tile)%field%celldx(j)=0.0
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+    
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+2
       chunk%tiles(tile)%field%celly(k)=0.0
       chunk%tiles(tile)%field%celldy(k)=0.0
     ENDDO
-    !$OMP END DO
+    
 
-    !$OMP DO
+    
     DO j=chunk%tiles(tile)%t_xmin-2,chunk%tiles(tile)%t_xmax+3
       chunk%tiles(tile)%field%vertexx(j)=0.0
       chunk%tiles(tile)%field%vertexdx(j)=0.0
     ENDDO
-    !$OMP END DO
-    !$OMP DO
+    
+    
     DO k=chunk%tiles(tile)%t_ymin-2,chunk%tiles(tile)%t_ymax+3
       chunk%tiles(tile)%field%vertexy(k)=0.0
       chunk%tiles(tile)%field%vertexdy(k)=0.0
     ENDDO
-  !$OMP END DO
+  
 
-  !$OMP END PARALLEL
  
   END DO
  
