@@ -67,6 +67,8 @@ OMP_SUN       = -xopenmp=parallel -vpara
 OMP_GNU       = -fopenmp
 OMP_CRAY      =
 OMP_PGI       = -mp=nonuma
+OMP_PGI_GPU   = $(OMP_PGI)
+OMP_PGI_HOST  = $(OMP_PGI)
 OMP_PATHSCALE = -mp
 OMP_XL        = -qsmp=omp -qthreaded
 OMP=$(OMP_$(COMPILER))
@@ -75,7 +77,9 @@ FLAGS_INTEL     = -O3 -no-prec-div
 FLAGS_SUN       = -fast -xipo=2 -Xlistv4
 FLAGS_GNU       = -O3 -march=native -funroll-loops
 FLAGS_CRAY      = -em -ra -h acc_model=fast_addr:no_deep_copy:auto_async_all
-FLAGS_PGI       = -fastsse -Mipa=fast -Mlist -acc -Minfo=acc -ta=nvidia,cc35
+FLAGS_PGI       = -fastsse -Mipa=fast -Mlist 
+FLAGS_PGI_GPU   = -fastsse -Mipa=fast -Mlist -acc -ta=nvidia,cc35 -Minfo=acc
+FLAGS_PGI_HOST   = -fastsse -Mipa=fast -Mlist -acc -ta=multicore -Minfo=acc
 FLAGS_PATHSCALE = -O3
 FLAGS_XL        = -O5 -qipa=partition=large -g -qfullpath -Q -qsigtrap -qextname=flush:ideal_gas_kernel_c:viscosity_kernel_c:pdv_kernel_c:revert_kernel_c:accelerate_kernel_c:flux_calc_kernel_c:advec_cell_kernel_c:advec_mom_kernel_c:reset_field_kernel_c:timer_c:unpack_top_bottom_buffers_c:pack_top_bottom_buffers_c:unpack_left_right_buffers_c:pack_left_right_buffers_c:field_summary_kernel_c:update_halo_kernel_c:generate_chunk_kernel_c:initialise_chunk_kernel_c:calc_dt_kernel_c:clover_unpack_message_bottom_c:clover_pack_message_bottom_c:clover_unpack_message_top_c:clover_pack_message_top_c:clover_unpack_message_right_c:clover_pack_message_right_c:clover_unpack_message_left_c:clover_pack_message_left_c -qlistopt -qattr=full -qlist -qreport -qxref=full -qsource -qsuppress=1506-224:1500-036FLAGS_          = -O3
 CFLAGS_INTEL     = -O3 -no-prec-div -restrict -fno-alias
@@ -83,6 +87,8 @@ CFLAGS_SUN       = -fast -xipo=2
 CFLAGS_GNU       = -O3 -march=native -funroll-loops
 CFLAGS_CRAY      = -em -h list=a
 CFLAGS_PGI       = -fastsse -Mipa=fast -Mlist
+CFLAGS_PGI_GPU   = $(CFLAGS_PGI)
+CFLAGS_PGI_HOST  = $(CFLAGS_PGI)
 CFLAGS_PATHSCALE = -O3
 CFLAGS_XL       = -O5 -qipa=partition=large -g -qfullpath -Q -qlistopt -qattr=full -qlist -qreport -qxref=full -qsource -qsuppress=1506-224:1500-036 -qsrcmsg
 CFLAGS_          = -O3
@@ -111,6 +117,8 @@ ifdef IEEE
   I3E_GNU       = -ffloat-store
   I3E_CRAY      = -hflex_mp=intolerant
   I3E_PGI       = -Kieee
+  I3E_PGI_GPU   = $(I3E_PGI)
+  I3E_PGI_HOST  = $(I3E_PGI)
   I3E_PATHSCALE = -mieee-fp
   I3E_XL       = -qfloat=nomaf
   I3E=$(I3E_$(COMPILER))
@@ -170,7 +178,7 @@ clover_leaf: c_lover *.f90 Makefile
 	visit.f90			\
 	clover_leaf.f90     \
 	timer_c.o             \
-	-o clover_leaf; echo $(MESSAGE)
+	-o clover_leaf_$(COMPILER); echo $(MESSAGE)
 
 c_lover: *.c Makefile
 	$(C_MPI_COMPILER) $(CFLAGS)	\

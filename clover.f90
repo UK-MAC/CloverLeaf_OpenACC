@@ -105,6 +105,99 @@ CONTAINS
 
   END SUBROUTINE clover_get_num_chunks
 
+
+  SUBROUTINE clover_decompose_ratio(x_cells,y_cells,left,right,bottom,top,ratio)
+
+    ! This decomposes the mesh into a number of chunks.
+    ! The number of chunks may be a multiple of the number of mpi tasks
+    ! Doesn't always return the best split if there are few factors
+    ! All factors need to be stored and the best picked. But its ok for now
+
+    IMPLICIT NONE
+
+    INTEGER :: x_cells,y_cells,left,right,top,bottom
+    INTEGER :: c,delta_x,delta_y
+
+    REAL(KIND=8) :: ratio(number_of_chunks)
+ 
+    REAL(KIND=8) :: mesh_ratio,factor_x,factor_y
+    INTEGER  :: chunk_x,chunk_y,mod_x,mod_y,split_found
+
+    INTEGER  :: cx,cy,cnk,add_x,add_y,add_x_prev,add_y_prev
+
+    ! 1D Decomposition of the mesh
+
+
+    
+
+    
+    IF(x_cells.GE.y_cells)THEN
+ 
+        chunk_x=number_of_chunks
+        chunk_y=1
+         
+        chunk%chunk_neighbours(chunk_bottom)=external_face
+        chunk%chunk_neighbours(chunk_top)=external_face
+
+        chunk%chunk_neighbours(chunk_left)=parallel%task
+        chunk%chunk_neighbours(chunk_right)=parallel%task+2
+
+        IF(parallel%task.EQ.0) chunk%chunk_neighbours(chunk_left)=external_face
+        IF(parallel%task.EQ.parallel%max_task-1) chunk%chunk_neighbours(chunk_right)=external_face
+
+        bottom=1
+        top=y_cells
+
+        right=0
+        left=1
+
+        DO cx=1,parallel%task+1
+          left=right+1
+          right=left+floor(real(x_cells)*ratio(cx)) -1
+        END DO
+
+        IF(parallel%task.EQ.parallel%max_task-1) right=x_cells
+
+    ELSE
+       chunk_y=number_of_chunks
+       chunk_x=1
+ 
+        chunk%chunk_neighbours(chunk_left)=external_face
+        chunk%chunk_neighbours(chunk_right)=external_face
+
+        chunk%chunk_neighbours(chunk_bottom)=parallel%task
+        chunk%chunk_neighbours(chunk_top)=parallel%task+2
+
+        
+        IF(parallel%task.EQ.0) chunk%chunk_neighbours(chunk_bottom)=external_face
+        IF(parallel%task.EQ.parallel%max_task-1) chunk%chunk_neighbours(chunk_top)=external_face
+
+        left=1
+        right=x_cells
+        
+        bottom=1
+        top=0
+
+        DO cy=1,parallel%task+1
+           bottom=top+1
+           top=bottom + floor(real(y_cells)*ratio(cy)) -1
+        END DO
+
+        IF(parallel%task.EQ.parallel%max_task-1) top=y_cells
+
+
+    ENDIF
+       ! Not strictly needed - but makes it clear what decomposition we actually
+       ! got from the input deck.
+       write(*,*) "Rank L R B T", parallel%task, left, right, bottom, top
+
+
+  END SUBROUTINE clover_decompose_ratio
+
+
+
+
+
   SUBROUTINE clover_decompose(x_cells,y_cells,left,right,bottom,top)
 
     ! This decomposes the mesh into a number of chunks.
@@ -201,7 +294,9 @@ CONTAINS
       WRITE(g_out,*)"Decomposing the mesh into ",chunk_x," by ",chunk_y," chunks"
       WRITE(g_out,*)"Decomposing the chunk with ",tiles_per_chunk," tiles"
       WRITE(g_out,*)
-    ENDIF
+ 
+   ENDIF
+
 
   END SUBROUTINE clover_decompose
 

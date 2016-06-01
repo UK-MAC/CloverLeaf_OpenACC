@@ -1,6 +1,33 @@
-# CloverLeaf_OpenACC
+# CloverLeaf_OpenACC - feature/heterogeneous
 
 This is the OpenACC version of CloverLeaf version 1.3. 
+
+## Branch Notes
+
+### Explicit mesh decomposition
+This branch lets you explicitly control the mesh decomposition ratios between MPI ranks.
+
+Simply state:
+ratio 0.75 0.2 0.05
+in clover.in to get 70% of the mesh allocated to MPI rank 0, 20% to rank 1 and 5% to rank 2.
+This is especially useful for running OpenACC heterogeneously - 1 MPI rank on the GPU and one on the host.
+Internally a 1D processor decomposition is used to evenly balance the cells.
+
+
+Note: When using the explicit mode the responsibility is on the user to decompose the problem correctly - performance will be poor with a bad configuration.
+A message is printed to STDOUT to outline the resulting mesh decomposition, for the user to check.
+
+### Explicit PGI targets
+
+To enable support for the PGI multicore target architecture we have enabled three PGI compiler targets:
+
+* `make COMPILER=PGI` - no OpenACC support
+* `make COMPILER=PGI_GPU` - for GPU target (specifically nvidia,cc35)
+* `make COMPILER=PGI_HOST` - for multicore target (running on the host)
+
+To support these different options the generated binary is renamed to clover_leaf_COMPILER.
+
+
 
 ## Release Notes
 

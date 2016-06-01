@@ -202,8 +202,9 @@ MODULE definitions_module
 
 
 
-
-
+  ! Variables to control the mesh decomposition
+  REAL(KIND=8),ALLOCATABLE,DIMENSION(:) :: lb_ratios
+  INTEGER :: by_ratio
 
   TYPE(chunk_type)       :: chunk
   INTEGER                :: number_of_chunks

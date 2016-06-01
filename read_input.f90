@@ -38,6 +38,7 @@ SUBROUTINE read_input()
   test_problem=0
 
   state_max=0
+  by_ratio =0
 
   grid%xmin=  0.0_8
   grid%ymin=  0.0_8
@@ -189,6 +190,13 @@ SUBROUTINE read_input()
         CASE('test_problem')
           test_problem=parse_getival(parse_getword(.TRUE.))
           IF(parallel%boss)WRITE(g_out,"(1x,a25,i12)")'test_problem',test_problem
+        CASE('ratio')
+          by_ratio=1
+          ALLOCATE(lb_ratios(1:number_of_chunks))
+          DO by_ratio=1,parallel%max_task
+            lb_ratios(by_ratio)=parse_getrval(parse_getword(.TRUE.)) 
+          END DO
+          IF(parallel%boss)WRITE(g_out,"(1x,a25,i12)")'by_ratio', by_ratio
         CASE('state')
 
           state=parse_getival(parse_getword(.TRUE.))

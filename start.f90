@@ -54,9 +54,12 @@ SUBROUTINE start
 
   CALL clover_get_num_chunks(number_of_chunks)
 
-
-  CALL clover_decompose(grid%x_cells,grid%y_cells,left,right,bottom,top)
-
+  ! Call the specific decomposition routine
+  IF(by_ratio.EQ.0)THEN
+    CALL clover_decompose(grid%x_cells,grid%y_cells,left,right,bottom,top)
+  ELSE  
+    CALL clover_decompose_ratio(grid%x_cells,grid%y_cells,left,right,bottom,top,lb_ratios)
+  ENDIF
   !create the chunks
       
   chunk%task = parallel%task
@@ -86,7 +89,6 @@ SUBROUTINE start
   ALLOCATE( chunk%tiles(1:tiles_per_chunk) )
 
   CALL clover_tile_decompose(x_cells, y_cells)
-    
 
 
   CALL build_field()
@@ -147,7 +149,6 @@ SUBROUTINE start
     CALL initialise_chunk(tile)
     CALL generate_chunk(tile)
   ENDDO
-
   advect_x=.TRUE.
 
   CALL clover_barrier
@@ -156,7 +157,6 @@ SUBROUTINE start
   ! at the end
   profiler_off=profiler_on
   profiler_on=.FALSE.
-
 
   DO tile = 1, tiles_per_chunk
     CALL ideal_gas(tile,.FALSE.)
@@ -174,14 +174,12 @@ SUBROUTINE start
   fields(FIELD_YVEL0)=1
   fields(FIELD_XVEL1)=1
   fields(FIELD_YVEL1)=1
-
   CALL update_halo(fields,2)
 
   IF(parallel%boss)THEN
     WRITE(g_out,*)
     WRITE(g_out,*) 'Problem initialised and generated'
   ENDIF
-
   CALL field_summary()
 
   IF(visit_frequency.NE.0) CALL visit()
