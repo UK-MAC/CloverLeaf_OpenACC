@@ -15,7 +15,9 @@ This OpenACC version is based off of the CAPS Kernels version.
 Due to limitations in data movement for Fortran data types, this version does not currently support tiling.
 
 
+## Note
 
+The two other OpenACC repos for KERNELS and LOOPS have been marked as deprecated, this version should be considered the reference OpenACC version.
 
 ## Performance
 
