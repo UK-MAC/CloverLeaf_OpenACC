@@ -33,7 +33,6 @@ MODULE clover_module
 
   USE data_module
   USE definitions_module
-  USE MPI
 
   IMPLICIT NONE
 
@@ -43,7 +42,6 @@ CONTAINS
 
     INTEGER :: err
 
-    CALL MPI_BARRIER(MPI_COMM_WORLD,err)
 
   END SUBROUTINE clover_barrier
 
@@ -51,7 +49,6 @@ CONTAINS
 
     INTEGER :: ierr,err
 
-    CALL MPI_ABORT(MPI_COMM_WORLD,ierr,err)
 
   END SUBROUTINE clover_abort
 
@@ -63,7 +60,6 @@ CONTAINS
     CALL FLUSH(0)
     CALL FLUSH(6)
     CALL FLUSH(g_out)
-    CALL MPI_FINALIZE(err)
 
   END SUBROUTINE clover_finalize
 
@@ -76,10 +72,7 @@ CONTAINS
     rank=0
     size=1
 
-    CALL MPI_INIT(err)
 
-    CALL MPI_COMM_RANK(MPI_COMM_WORLD,rank,err)
-    CALL MPI_COMM_SIZE(MPI_COMM_WORLD,size,err)
 
     parallel%parallel=.TRUE.
     parallel%task=rank
@@ -353,7 +346,6 @@ CONTAINS
     INTEGER      :: left_right_offset(15),bottom_top_offset(15)
     INTEGER      :: request(4)
     INTEGER      :: message_count,err
-    INTEGER      :: status(MPI_STATUS_SIZE,4)
     INTEGER      :: end_pack_index_left_right, end_pack_index_bottom_top,field
 
     ! Assuming 1 patch per task, this will be changed
@@ -410,7 +402,6 @@ CONTAINS
     ENDIF
 
     !make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
 
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
@@ -473,7 +464,6 @@ CONTAINS
     ENDIF
 
     !need to make a call to wait / sync
-    CALL MPI_WAITALL(message_count,request,status,err)
 
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
@@ -709,11 +699,7 @@ CONTAINS
 
     left_task =chunk%chunk_neighbours(chunk_left) - 1
 
-    CALL MPI_ISEND(left_snd_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_send &
-      ,MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(left_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,left_task,tag_recv &
-      ,MPI_COMM_WORLD,req_recv,err)
 
   END SUBROUTINE clover_send_recv_message_left
 
@@ -1127,11 +1113,7 @@ CONTAINS
 
     right_task=chunk%chunk_neighbours(chunk_right) - 1
 
-    CALL MPI_ISEND(right_snd_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_send, &
-      MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(right_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,right_task,tag_recv, &
-      MPI_COMM_WORLD,req_recv,err)
 
   END SUBROUTINE clover_send_recv_message_right
 
@@ -1541,11 +1523,7 @@ CONTAINS
 
     top_task=chunk%chunk_neighbours(chunk_top) - 1
 
-    CALL MPI_ISEND(top_snd_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_send, &
-      MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(top_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,top_task,tag_recv, &
-      MPI_COMM_WORLD,req_recv,err)
 
   END SUBROUTINE clover_send_recv_message_top
 
@@ -1956,11 +1934,7 @@ CONTAINS
 
     bottom_task=chunk%chunk_neighbours(chunk_bottom) - 1
 
-    CALL MPI_ISEND(bottom_snd_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_send &
-      ,MPI_COMM_WORLD,req_send,err)
 
-    CALL MPI_IRECV(bottom_rcv_buffer,total_size,MPI_DOUBLE_PRECISION,bottom_task,tag_recv &
-      ,MPI_COMM_WORLD,req_recv,err)
 
   END SUBROUTINE clover_send_recv_message_bottom
 
@@ -2175,7 +2149,6 @@ CONTAINS
 
     total=value
 
-    CALL MPI_REDUCE(value,total,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,err)
 
     value=total
 
@@ -2193,7 +2166,6 @@ CONTAINS
 
     minimum=value
 
-    CALL MPI_ALLREDUCE(value,minimum,1,MPI_DOUBLE_PRECISION,MPI_MIN,MPI_COMM_WORLD,err)
 
     value=minimum
 
@@ -2211,7 +2183,6 @@ CONTAINS
 
     maximum=value
 
-    CALL MPI_ALLREDUCE(value,maximum,1,MPI_DOUBLE_PRECISION,MPI_MAX,MPI_COMM_WORLD,err)
 
     value=maximum
 
@@ -2229,7 +2200,6 @@ CONTAINS
 
     values(1)=value ! Just to ensure it will work in serial
 
-    CALL MPI_ALLGATHER(value,1,MPI_DOUBLE_PRECISION,values,1,MPI_DOUBLE_PRECISION,MPI_COMM_WORLD,err)
 
   END SUBROUTINE clover_allgather
 
@@ -2245,7 +2215,6 @@ CONTAINS
 
     maximum=error
 
-    CALL MPI_ALLREDUCE(error,maximum,1,MPI_INTEGER,MPI_MAX,MPI_COMM_WORLD,err)
 
     error=maximum
 

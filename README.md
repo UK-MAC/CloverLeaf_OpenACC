@@ -2,6 +2,10 @@
 
 This is the OpenACC version of CloverLeaf version 1.3. 
 
+## Branch
+
+This branch has the MPI removed, and only uses OpenACC.
+
 ## Release Notes
 
 ### Version 1.3
