@@ -66,16 +66,16 @@ SUBROUTINE field_summary()
 
 
     DO tile=1,tiles_per_chunk
-      CALL field_summary_kernel(chunk%tiles(tile)%t_xmin,                   &
-        chunk%tiles(tile)%t_xmax,                   &
-        chunk%tiles(tile)%t_ymin,                   &
-        chunk%tiles(tile)%t_ymax,                   &
-        chunk%tiles(tile)%field%volume,                  &
-        chunk%tiles(tile)%field%density0,                &
-        chunk%tiles(tile)%field%energy0,                 &
-        chunk%tiles(tile)%field%pressure,                &
-        chunk%tiles(tile)%field%xvel0,                   &
-        chunk%tiles(tile)%field%yvel0,                   &
+      CALL field_summary_kernel(chunk%tiles(tile)%tp%t_xmin,                   &
+        chunk%tiles(tile)%tp%t_xmax,                   &
+        chunk%tiles(tile)%tp%t_ymin,                   &
+        chunk%tiles(tile)%tp%t_ymax,                   &
+        chunk%tiles(tile)%tp%field%volume,                  &
+        chunk%tiles(tile)%tp%field%density0,                &
+        chunk%tiles(tile)%tp%field%energy0,                 &
+        chunk%tiles(tile)%tp%field%pressure,                &
+        chunk%tiles(tile)%tp%field%xvel0,                   &
+        chunk%tiles(tile)%tp%field%yvel0,                   &
         vol,mass,ie,ke,press                     )
       t_vol=t_vol+vol
       t_mass=t_mass+mass

@@ -30,11 +30,12 @@ SUBROUTINE hydro
     USE flux_calc_module
     USE advection_module
     USE reset_field_module
+    USE loadbalance_module
 
     IMPLICIT NONE
 
     INTEGER         :: loc(1), tile
-    REAL(KIND=8)    :: timer,timerstart,wall_clock,step_clock
+    REAL(KIND=8)    :: timer,timerstart,wall_clock,step_clock,lb_timer,lb_timer2
   
     REAL(KIND=8)    :: grind_time,cells,rstep
     REAL(KIND=8)    :: step_time,step_grind
@@ -43,51 +44,9 @@ SUBROUTINE hydro
 
     timerstart = timer()
 
-    !$ACC DATA &
-    !$ACC COPYIN(chunk%tiles(1)%field%density0)   &
-    !$ACC COPYIN(chunk%tiles(1)%field%density1)   &
-    !$ACC COPYIN(chunk%tiles(1)%field%energy0)    &
-    !$ACC COPYIN(chunk%tiles(1)%field%energy1)    &
-    !$ACC COPYIN(chunk%tiles(1)%field%pressure)   &
-    !$ACC COPYIN(chunk%tiles(1)%field%soundspeed) &
-    !$ACC COPYIN(chunk%tiles(1)%field%viscosity)  &
-    !$ACC COPYIN(chunk%tiles(1)%field%xvel0)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%yvel0)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%xvel1)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%yvel1)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%vol_flux_x) &
-    !$ACC COPYIN(chunk%tiles(1)%field%vol_flux_y) &
-    !$ACC COPYIN(chunk%tiles(1)%field%mass_flux_x)&
-    !$ACC COPYIN(chunk%tiles(1)%field%mass_flux_y)&
-    !$ACC COPYIN(chunk%tiles(1)%field%volume)     &
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array1)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array2)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array3)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array4)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array5)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array6)&
-    !$ACC COPYIN(chunk%tiles(1)%field%work_array7)&
-    !$ACC COPYIN(chunk%tiles(1)%field%cellx)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%celly)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%celldx)     &
-    !$ACC COPYIN(chunk%tiles(1)%field%celldy)     &
-    !$ACC COPYIN(chunk%tiles(1)%field%vertexx)    &
-    !$ACC COPYIN(chunk%tiles(1)%field%vertexdx)   &
-    !$ACC COPYIN(chunk%tiles(1)%field%vertexy)    &
-    !$ACC COPYIN(chunk%tiles(1)%field%vertexdy)   &
-    !$ACC COPYIN(chunk%tiles(1)%field%xarea)      &
-    !$ACC COPYIN(chunk%tiles(1)%field%yarea)      &
-    !$ACC COPY(chunk%left_snd_buffer)    &
-    !$ACC COPY(chunk%left_rcv_buffer)    &
-    !$ACC COPY(chunk%right_snd_buffer)   &
-    !$ACC COPY(chunk%right_rcv_buffer)   &
-    !$ACC COPY(chunk%bottom_snd_buffer)  &
-    !$ACC COPY(chunk%bottom_rcv_buffer)  &
-    !$ACC COPY(chunk%top_snd_buffer)     &
-    !$ACC COPY(chunk%top_rcv_buffer)
-
-
     DO
+        lb_timer=profiler%cell_advection + profiler%mom_advection
+
 
         step_time = timer()
 
@@ -110,6 +69,8 @@ SUBROUTINE hydro
         advect_x = .NOT. advect_x
   
         time = time + dt
+
+        lb_timer2=profiler%cell_advection + profiler%mom_advection
 
         IF(summary_frequency.NE.0) THEN
             IF(MOD(step, summary_frequency).EQ.0) CALL field_summary()
@@ -250,9 +211,11 @@ SUBROUTINE hydro
 
         END IF
 
+        ! Load Balance
+        CALL loadbalance(lb_timer2-lb_timer, step)
+
     END DO
 
 
-!$ACC END DATA
 
 END SUBROUTINE hydro

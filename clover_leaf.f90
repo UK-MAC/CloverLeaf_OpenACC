@@ -43,6 +43,8 @@ PROGRAM clover_leaf
   IMPLICIT NONE
 
   !$ INTEGER :: OMP_GET_NUM_THREADS,OMP_GET_THREAD_NUM
+  
+  INTEGER :: tile
 
   CALL clover_init_comms()
 
@@ -68,9 +70,45 @@ PROGRAM clover_leaf
   !$OMP END PARALLEL
 
   CALL initialise
+  CALL start_setup
+
+  ! Data copy
+
+!$ACC DATA &
+    !$ACC COPY(chunk%left_snd_buffer)    &
+    !$ACC COPY(chunk%left_rcv_buffer)    &
+    !$ACC COPY(chunk%right_snd_buffer)   &
+    !$ACC COPY(chunk%right_rcv_buffer)   &
+    !$ACC COPY(chunk%bottom_snd_buffer)  &
+    !$ACC COPY(chunk%bottom_rcv_buffer)  &
+    !$ACC COPY(chunk%top_snd_buffer)     &
+    !$ACC COPY(chunk%top_rcv_buffer)
+
+
+  DO tile=1,tiles_per_chunk
+    CALL deepcopy_tile(tile)
+  END DO
+
+  CALL start_init
+
+  DO tile=1,tiles_per_chunk
+    CALL updatehost_tile(tile)
+  END DO
+
+
+  CALL clover_barrier
+
+  IF(parallel%boss)THEN
+    WRITE(g_out,*) 'Starting the calculation'
+  ENDIF
+
+  CLOSE(g_in)
+
 
   CALL hydro
-  
+
+!$ACC END DATA  
+
   ! Deallocate everything
   
 END PROGRAM clover_leaf

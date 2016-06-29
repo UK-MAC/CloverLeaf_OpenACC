@@ -33,48 +33,48 @@ CONTAINS
     INTEGER :: tile,which_vel,direction,sweep_number
 
       IF(which_vel.EQ.1) THEN
-        CALL advec_mom_kernel(chunk%tiles(tile)%t_xmin,            &
-          chunk%tiles(tile)%t_xmax,              &
-          chunk%tiles(tile)%t_ymin,              &
-          chunk%tiles(tile)%t_ymax,              &
-          chunk%tiles(tile)%field%xvel1,         &
-          chunk%tiles(tile)%field%mass_flux_x,   &
-          chunk%tiles(tile)%field%vol_flux_x,    &
-          chunk%tiles(tile)%field%mass_flux_y,   &
-          chunk%tiles(tile)%field%vol_flux_y,    &
-          chunk%tiles(tile)%field%volume,        &
-          chunk%tiles(tile)%field%density1,      &
-          chunk%tiles(tile)%field%work_array1,   &
-          chunk%tiles(tile)%field%work_array2,   &
-          chunk%tiles(tile)%field%work_array3,   &
-          chunk%tiles(tile)%field%work_array4,   &
-          chunk%tiles(tile)%field%work_array5,   &
-          chunk%tiles(tile)%field%work_array6,   &
-          chunk%tiles(tile)%field%celldx,        &
-          chunk%tiles(tile)%field%celldy,        &
+        CALL advec_mom_kernel(chunk%tiles(tile)%tp%t_xmin,            &
+          chunk%tiles(tile)%tp%t_xmax,              &
+          chunk%tiles(tile)%tp%t_ymin,              &
+          chunk%tiles(tile)%tp%t_ymax,              &
+          chunk%tiles(tile)%tp%field%xvel1,         &
+          chunk%tiles(tile)%tp%field%mass_flux_x,   &
+          chunk%tiles(tile)%tp%field%vol_flux_x,    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,   &
+          chunk%tiles(tile)%tp%field%vol_flux_y,    &
+          chunk%tiles(tile)%tp%field%volume,        &
+          chunk%tiles(tile)%tp%field%density1,      &
+          chunk%tiles(tile)%tp%field%work_array1,   &
+          chunk%tiles(tile)%tp%field%work_array2,   &
+          chunk%tiles(tile)%tp%field%work_array3,   &
+          chunk%tiles(tile)%tp%field%work_array4,   &
+          chunk%tiles(tile)%tp%field%work_array5,   &
+          chunk%tiles(tile)%tp%field%work_array6,   &
+          chunk%tiles(tile)%tp%field%celldx,        &
+          chunk%tiles(tile)%tp%field%celldy,        &
           which_vel,                             &
           sweep_number,                          &
           direction                              )
       ELSE
-        CALL advec_mom_kernel(chunk%tiles(tile)%t_xmin,            &
-          chunk%tiles(tile)%t_xmax,              &
-          chunk%tiles(tile)%t_ymin,              &
-          chunk%tiles(tile)%t_ymax,              &
-          chunk%tiles(tile)%field%yvel1,         &
-          chunk%tiles(tile)%field%mass_flux_x,   &
-          chunk%tiles(tile)%field%vol_flux_x,    &
-          chunk%tiles(tile)%field%mass_flux_y,   &
-          chunk%tiles(tile)%field%vol_flux_y,    &
-          chunk%tiles(tile)%field%volume,        &
-          chunk%tiles(tile)%field%density1,      &
-          chunk%tiles(tile)%field%work_array1,   &
-          chunk%tiles(tile)%field%work_array2,   &
-          chunk%tiles(tile)%field%work_array3,   &
-          chunk%tiles(tile)%field%work_array4,   &
-          chunk%tiles(tile)%field%work_array5,   &
-          chunk%tiles(tile)%field%work_array6,   &
-          chunk%tiles(tile)%field%celldx,        &
-          chunk%tiles(tile)%field%celldy,        &
+        CALL advec_mom_kernel(chunk%tiles(tile)%tp%t_xmin,            &
+          chunk%tiles(tile)%tp%t_xmax,              &
+          chunk%tiles(tile)%tp%t_ymin,              &
+          chunk%tiles(tile)%tp%t_ymax,              &
+          chunk%tiles(tile)%tp%field%yvel1,         &
+          chunk%tiles(tile)%tp%field%mass_flux_x,   &
+          chunk%tiles(tile)%tp%field%vol_flux_x,    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,   &
+          chunk%tiles(tile)%tp%field%vol_flux_y,    &
+          chunk%tiles(tile)%tp%field%volume,        &
+          chunk%tiles(tile)%tp%field%density1,      &
+          chunk%tiles(tile)%tp%field%work_array1,   &
+          chunk%tiles(tile)%tp%field%work_array2,   &
+          chunk%tiles(tile)%tp%field%work_array3,   &
+          chunk%tiles(tile)%tp%field%work_array4,   &
+          chunk%tiles(tile)%tp%field%work_array5,   &
+          chunk%tiles(tile)%tp%field%work_array6,   &
+          chunk%tiles(tile)%tp%field%celldx,        &
+          chunk%tiles(tile)%tp%field%celldy,        &
           which_vel,                             &
           sweep_number,                          &
           direction                              )

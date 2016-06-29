@@ -33,27 +33,27 @@ SUBROUTINE initialise_chunk(tile)
   dx=(grid%xmax-grid%xmin)/float(grid%x_cells)
   dy=(grid%ymax-grid%ymin)/float(grid%y_cells)
 
-  xmin=grid%xmin+dx*float(chunk%tiles(tile)%t_left-1)
+  xmin=grid%xmin+dx*float(chunk%tiles(tile)%tp%t_left-1)
 
-  ymin=grid%ymin+dy*float(chunk%tiles(tile)%t_bottom-1)
+  ymin=grid%ymin+dy*float(chunk%tiles(tile)%tp%t_bottom-1)
 
 
-    CALL initialise_chunk_kernel(chunk%tiles(tile)%t_xmin,    &
-      chunk%tiles(tile)%t_xmax,    &
-      chunk%tiles(tile)%t_ymin,    &
-      chunk%tiles(tile)%t_ymax,    &
+    CALL initialise_chunk_kernel(chunk%tiles(tile)%tp%t_xmin,    &
+      chunk%tiles(tile)%tp%t_xmax,    &
+      chunk%tiles(tile)%tp%t_ymin,    &
+      chunk%tiles(tile)%tp%t_ymax,    &
       xmin,ymin,dx,dy,              &
-      chunk%tiles(tile)%field%vertexx,  &
-      chunk%tiles(tile)%field%vertexdx, &
-      chunk%tiles(tile)%field%vertexy,  &
-      chunk%tiles(tile)%field%vertexdy, &
-      chunk%tiles(tile)%field%cellx,    &
-      chunk%tiles(tile)%field%celldx,   &
-      chunk%tiles(tile)%field%celly,    &
-      chunk%tiles(tile)%field%celldy,   &
-      chunk%tiles(tile)%field%volume,   &
-      chunk%tiles(tile)%field%xarea,    &
-      chunk%tiles(tile)%field%yarea     )
+      chunk%tiles(tile)%tp%field%vertexx,  &
+      chunk%tiles(tile)%tp%field%vertexdx, &
+      chunk%tiles(tile)%tp%field%vertexy,  &
+      chunk%tiles(tile)%tp%field%vertexdy, &
+      chunk%tiles(tile)%tp%field%cellx,    &
+      chunk%tiles(tile)%tp%field%celldx,   &
+      chunk%tiles(tile)%tp%field%celly,    &
+      chunk%tiles(tile)%tp%field%celldy,   &
+      chunk%tiles(tile)%tp%field%volume,   &
+      chunk%tiles(tile)%tp%field%xarea,    &
+      chunk%tiles(tile)%tp%field%yarea     )
 
 
 

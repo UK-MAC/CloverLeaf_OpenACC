@@ -151,6 +151,7 @@ CONTAINS
     xl_pos=cellx(jldt)
     yl_pos=celly(kldt)
 
+
     IF(dt_min_val.LT.dtmin) small=1
 
     IF(small.NE.0)THEN

@@ -282,6 +282,6 @@ SUBROUTINE read_input()
 
   ! Have to force the number of tiles to 1 for openacc
   ! Not worked out a way of doing the data copy with multiple tiles
-  tiles_per_chunk=1
+  !tiles_per_chunk=1
 
 END SUBROUTINE read_input

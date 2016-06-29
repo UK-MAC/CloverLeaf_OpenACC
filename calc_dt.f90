@@ -45,10 +45,10 @@ CONTAINS
     small = 0
 
 
-      CALL calc_dt_kernel(chunk%tiles(tile)%t_xmin,     &
-        chunk%tiles(tile)%t_xmax,     &
-        chunk%tiles(tile)%t_ymin,     &
-        chunk%tiles(tile)%t_ymax,     &
+      CALL calc_dt_kernel(chunk%tiles(tile)%tp%t_xmin,     &
+        chunk%tiles(tile)%tp%t_xmax,     &
+        chunk%tiles(tile)%tp%t_ymin,     &
+        chunk%tiles(tile)%tp%t_ymax,     &
         g_small,                       &
         g_big,                         &
         dtmin,                         &
@@ -56,21 +56,21 @@ CONTAINS
         dtu_safe,                      &
         dtv_safe,                      &
         dtdiv_safe,                    &
-        chunk%tiles(tile)%field%xarea,     &
-        chunk%tiles(tile)%field%yarea,     &
-        chunk%tiles(tile)%field%cellx,     &
-        chunk%tiles(tile)%field%celly,     &
-        chunk%tiles(tile)%field%celldx,    &
-        chunk%tiles(tile)%field%celldy,    &
-        chunk%tiles(tile)%field%volume,    &
-        chunk%tiles(tile)%field%density0,  &
-        chunk%tiles(tile)%field%energy0,   &
-        chunk%tiles(tile)%field%pressure,  &
-        chunk%tiles(tile)%field%viscosity, &
-        chunk%tiles(tile)%field%soundspeed,&
-        chunk%tiles(tile)%field%xvel0,     &
-        chunk%tiles(tile)%field%yvel0,     &
-        chunk%tiles(tile)%field%work_array1,&
+        chunk%tiles(tile)%tp%field%xarea,     &
+        chunk%tiles(tile)%tp%field%yarea,     &
+        chunk%tiles(tile)%tp%field%cellx,     &
+        chunk%tiles(tile)%tp%field%celly,     &
+        chunk%tiles(tile)%tp%field%celldx,    &
+        chunk%tiles(tile)%tp%field%celldy,    &
+        chunk%tiles(tile)%tp%field%volume,    &
+        chunk%tiles(tile)%tp%field%density0,  &
+        chunk%tiles(tile)%tp%field%energy0,   &
+        chunk%tiles(tile)%tp%field%pressure,  &
+        chunk%tiles(tile)%tp%field%viscosity, &
+        chunk%tiles(tile)%tp%field%soundspeed,&
+        chunk%tiles(tile)%tp%field%xvel0,     &
+        chunk%tiles(tile)%tp%field%yvel0,     &
+        chunk%tiles(tile)%tp%field%work_array1,&
         local_dt,                      &
         l_control,                     &
         xl_pos,                        &

@@ -47,18 +47,18 @@ SUBROUTINE generate_chunk(tile)
   ENDDO
 
 
-    CALL generate_chunk_kernel(chunk%tiles(tile)%t_xmin,             &
-      chunk%tiles(tile)%t_xmax,             &
-      chunk%tiles(tile)%t_ymin,             &
-      chunk%tiles(tile)%t_ymax,             &
-      chunk%tiles(tile)%field%vertexx,           &
-      chunk%tiles(tile)%field%vertexy,           &
-      chunk%tiles(tile)%field%cellx,             &
-      chunk%tiles(tile)%field%celly,             &
-      chunk%tiles(tile)%field%density0,          &
-      chunk%tiles(tile)%field%energy0,           &
-      chunk%tiles(tile)%field%xvel0,             &
-      chunk%tiles(tile)%field%yvel0,             &
+    CALL generate_chunk_kernel(chunk%tiles(tile)%tp%t_xmin,             &
+      chunk%tiles(tile)%tp%t_xmax,             &
+      chunk%tiles(tile)%tp%t_ymin,             &
+      chunk%tiles(tile)%tp%t_ymax,             &
+      chunk%tiles(tile)%tp%field%vertexx,           &
+      chunk%tiles(tile)%tp%field%vertexy,           &
+      chunk%tiles(tile)%tp%field%cellx,             &
+      chunk%tiles(tile)%tp%field%celly,             &
+      chunk%tiles(tile)%tp%field%density0,          &
+      chunk%tiles(tile)%tp%field%energy0,           &
+      chunk%tiles(tile)%tp%field%xvel0,             &
+      chunk%tiles(tile)%tp%field%yvel0,             &
       number_of_states,                      &
       state_density,                         &
       state_energy,                          &

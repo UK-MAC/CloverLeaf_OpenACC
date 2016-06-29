@@ -136,17 +136,7 @@ SUBROUTINE initialise
 
   step=0
 
-  CALL start
-
-  CALL clover_barrier
-
-  IF(parallel%boss)THEN
-    WRITE(g_out,*) 'Starting the calculation'
-  ENDIF
-
-  CLOSE(g_in)
-
-END SUBROUTINE initialise
+ END SUBROUTINE initialise
 
 FUNCTION get_unit(dummy)
   INTEGER :: get_unit,dummy

@@ -37,24 +37,24 @@ CONTAINS
 
 
       IF(.NOT.predict) THEN
-        CALL ideal_gas_kernel(chunk%tiles(tile)%t_xmin,    &
-          chunk%tiles(tile)%t_xmax,      &
-          chunk%tiles(tile)%t_ymin,      &
-          chunk%tiles(tile)%t_ymax,      &
-          chunk%tiles(tile)%field%density0,   &
-          chunk%tiles(tile)%field%energy0,    &
-          chunk%tiles(tile)%field%pressure,   &
-          chunk%tiles(tile)%field%soundspeed  )
+        CALL ideal_gas_kernel(chunk%tiles(tile)%tp%t_xmin,    &
+          chunk%tiles(tile)%tp%t_xmax,      &
+          chunk%tiles(tile)%tp%t_ymin,      &
+          chunk%tiles(tile)%tp%t_ymax,      &
+          chunk%tiles(tile)%tp%field%density0,   &
+          chunk%tiles(tile)%tp%field%energy0,    &
+          chunk%tiles(tile)%tp%field%pressure,   &
+          chunk%tiles(tile)%tp%field%soundspeed  )
 
       ELSE
-        CALL ideal_gas_kernel(chunk%tiles(tile)%t_xmin,    &
-          chunk%tiles(tile)%t_xmax,      &
-          chunk%tiles(tile)%t_ymin,      &
-          chunk%tiles(tile)%t_ymax,      &
-          chunk%tiles(tile)%field%density1,   &
-          chunk%tiles(tile)%field%energy1,    &
-          chunk%tiles(tile)%field%pressure,   &
-          chunk%tiles(tile)%field%soundspeed  )
+        CALL ideal_gas_kernel(chunk%tiles(tile)%tp%t_xmin,    &
+          chunk%tiles(tile)%tp%t_xmax,      &
+          chunk%tiles(tile)%tp%t_ymin,      &
+          chunk%tiles(tile)%tp%t_ymax,      &
+          chunk%tiles(tile)%tp%field%density1,   &
+          chunk%tiles(tile)%tp%field%energy1,    &
+          chunk%tiles(tile)%tp%field%pressure,   &
+          chunk%tiles(tile)%tp%field%soundspeed  )
 
       ENDIF
 

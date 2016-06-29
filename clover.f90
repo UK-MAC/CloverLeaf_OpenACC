@@ -129,30 +129,30 @@ CONTAINS
     chunk_x=number_of_chunks
     chunk_y=1
 
-    split_found=0 ! Used to detect 1D decomposition
-    DO c=1,number_of_chunks
-      IF (MOD(number_of_chunks,c).EQ.0) THEN
-        factor_x=number_of_chunks/real(c)
-        factor_y=c
-        !Compare the factor ratio with the mesh ratio
-        IF(factor_x/factor_y.LE.mesh_ratio) THEN
-          chunk_y=c
-          chunk_x=number_of_chunks/c
-          split_found=1
-          EXIT
-        ENDIF
-      ENDIF
-    ENDDO
+!    split_found=0 ! Used to detect 1D decomposition
+!    DO c=1,number_of_chunks
+!      IF (MOD(number_of_chunks,c).EQ.0) THEN
+!        factor_x=number_of_chunks/real(c)
+!        factor_y=c
+!        !Compare the factor ratio with the mesh ratio
+!        IF(factor_x/factor_y.LE.mesh_ratio) THEN
+!          chunk_y=c
+!          chunk_x=number_of_chunks/c
+!          split_found=1
+!          EXIT
+!        ENDIF
+!      ENDIF
+!    ENDDO
 
-    IF(split_found.EQ.0.OR.chunk_y.EQ.number_of_chunks) THEN ! Prime number or 1D decomp detected
-      IF(mesh_ratio.GE.1.0) THEN
-        chunk_x=number_of_chunks
-        chunk_y=1
-      ELSE
-        chunk_x=1
-        chunk_y=number_of_chunks
-      ENDIF
-    ENDIF
+!    IF(split_found.EQ.0.OR.chunk_y.EQ.number_of_chunks) THEN ! Prime number or 1D decomp detected
+!      IF(mesh_ratio.GE.1.0) THEN
+!        chunk_x=number_of_chunks
+!        chunk_y=1
+!      ELSE
+!        chunk_x=1
+!        chunk_y=number_of_chunks
+!      ENDIF
+!    ENDIF
 
     delta_x=x_cells/chunk_x
     delta_y=y_cells/chunk_y
@@ -222,29 +222,29 @@ CONTAINS
     tile_y=1
 
     split_found=0 ! Used to detect 1D decomposition
-    DO t=1,tiles_per_chunk
-      IF (MOD(tiles_per_chunk,t).EQ.0) THEN
-        factor_x=tiles_per_chunk/real(t)
-        factor_y=t
-        !Compare the factor ratio with the mesh ratio
-        IF(factor_x/factor_y.LE.chunk_mesh_ratio) THEN
-          tile_y=t
-          tile_x=tiles_per_chunk/t
-          split_found=1
-          EXIT
-        ENDIF
-      ENDIF
-    ENDDO
+!    DO t=1,tiles_per_chunk
+!      IF (MOD(tiles_per_chunk,t).EQ.0) THEN
+!        factor_x=tiles_per_chunk/real(t)
+!        factor_y=t
+!        !Compare the factor ratio with the mesh ratio
+!        IF(factor_x/factor_y.LE.chunk_mesh_ratio) THEN
+!          tile_y=t
+!          tile_x=tiles_per_chunk/t
+!          split_found=1
+!          EXIT
+!        ENDIF
+!      ENDIF
+!    ENDDO
 
-    IF(split_found.EQ.0.OR.tile_y.EQ.tiles_per_chunk) THEN ! Prime number or 1D decomp detected
-      IF(chunk_mesh_ratio.GE.1.0) THEN
-        tile_x=tiles_per_chunk
-        tile_y=1
-      ELSE
-        tile_x=1
-        tile_y=tiles_per_chunk
-      ENDIF
-    ENDIF
+!    IF(split_found.EQ.0.OR.tile_y.EQ.tiles_per_chunk) THEN ! Prime number or 1D decomp detected
+!      IF(chunk_mesh_ratio.GE.1.0) THEN
+!        tile_x=tiles_per_chunk
+!        tile_y=1
+!      ELSE
+!        tile_x=1
+!        tile_y=tiles_per_chunk
+!      ENDIF
+!    ENDIF
 
     chunk_delta_x=chunk_x_cells/tile_x
     chunk_delta_y=chunk_y_cells/tile_y
@@ -267,44 +267,44 @@ CONTAINS
         bottom = chunk%bottom+(ty-1)*chunk_delta_y+add_y_prev
         top    = bottom+chunk_delta_y-1+add_y
 
-        chunk%tiles(tile)%tile_neighbours(tile_left)=tile_x*(ty-1)+tx-1
-        chunk%tiles(tile)%tile_neighbours(tile_right)=tile_x*(ty-1)+tx+1
-        chunk%tiles(tile)%tile_neighbours(tile_bottom)=tile_x*(ty-2)+tx
-        chunk%tiles(tile)%tile_neighbours(tile_top)=tile_x*(ty)+tx
+        chunk%tiles(tile)%tp%tile_neighbours(tile_left)=tile_x*(ty-1)+tx-1
+        chunk%tiles(tile)%tp%tile_neighbours(tile_right)=tile_x*(ty-1)+tx+1
+        chunk%tiles(tile)%tp%tile_neighbours(tile_bottom)=tile_x*(ty-2)+tx
+        chunk%tiles(tile)%tp%tile_neighbours(tile_top)=tile_x*(ty)+tx
 
 
         !initial set the external tile mask to 0 for each tile
-        chunk%tiles(tile)%external_tile_mask = 0
+        chunk%tiles(tile)%tp%external_tile_mask = 0
 
         IF(tx.EQ.1) THEN
-          chunk%tiles(tile)%tile_neighbours(tile_left)=external_tile
-          chunk%tiles(tile)%external_tile_mask(TILE_LEFT) = 1
+          chunk%tiles(tile)%tp%tile_neighbours(tile_left)=external_tile
+          chunk%tiles(tile)%tp%external_tile_mask(TILE_LEFT) = 1
         ENDIF
         IF(tx.EQ.tile_x) THEN
-          chunk%tiles(tile)%tile_neighbours(tile_right)=external_tile
-          chunk%tiles(tile)%external_tile_mask(TILE_RIGHT) = 1
+          chunk%tiles(tile)%tp%tile_neighbours(tile_right)=external_tile
+          chunk%tiles(tile)%tp%external_tile_mask(TILE_RIGHT) = 1
         ENDIF
         IF(ty.EQ.1) THEN
-          chunk%tiles(tile)%tile_neighbours(tile_bottom)=external_tile
-          chunk%tiles(tile)%external_tile_mask(TILE_BOTTOM) = 1
+          chunk%tiles(tile)%tp%tile_neighbours(tile_bottom)=external_tile
+          chunk%tiles(tile)%tp%external_tile_mask(TILE_BOTTOM) = 1
         ENDIF
         IF(ty.EQ.tile_y) THEN
-          chunk%tiles(tile)%tile_neighbours(tile_top)=external_tile
-          chunk%tiles(tile)%external_tile_mask(TILE_TOP) = 1
+          chunk%tiles(tile)%tp%tile_neighbours(tile_top)=external_tile
+          chunk%tiles(tile)%tp%external_tile_mask(TILE_TOP) = 1
         ENDIF
 
         IF(tx.LE.chunk_mod_x)add_x_prev=add_x_prev+1
 
-        chunk%tiles(tile)%t_xmin = 1
-        chunk%tiles(tile)%t_xmax = right - left + 1
-        chunk%tiles(tile)%t_ymin = 1
-        chunk%tiles(tile)%t_ymax = top - bottom + 1
+        chunk%tiles(tile)%tp%t_xmin = 1
+        chunk%tiles(tile)%tp%t_xmax = right - left + 1
+        chunk%tiles(tile)%tp%t_ymin = 1
+        chunk%tiles(tile)%tp%t_ymax = top - bottom + 1
 
             
-        chunk%tiles(tile)%t_left = left
-        chunk%tiles(tile)%t_right = right
-        chunk%tiles(tile)%t_top = top
-        chunk%tiles(tile)%t_bottom = bottom
+        chunk%tiles(tile)%tp%t_left = left
+        chunk%tiles(tile)%tp%t_right = right
+        chunk%tiles(tile)%tp%t_top = top
+        chunk%tiles(tile)%tp%t_bottom = bottom
 
         tile=tile+1
       ENDDO
@@ -378,7 +378,7 @@ CONTAINS
       ! do left exchanges
       ! Find left hand tiles
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_LEFT).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_LEFT).EQ.EXTERNAL_TILE) THEN
           CALL clover_pack_left(tile, fields, depth, left_right_offset)
         ENDIF
       ENDDO
@@ -395,7 +395,7 @@ CONTAINS
     IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
       ! do right exchanges
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_RIGHT).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_RIGHT).EQ.EXTERNAL_TILE) THEN
           CALL clover_pack_right(tile, fields, depth, left_right_offset)
         ENDIF
       ENDDO
@@ -415,7 +415,7 @@ CONTAINS
     !unpack in left direction
     IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_LEFT).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_LEFT).EQ.EXTERNAL_TILE) THEN
           CALL clover_unpack_left(fields, tile, depth,                      &
             chunk%left_rcv_buffer,             &
             left_right_offset)
@@ -427,7 +427,7 @@ CONTAINS
     !unpack in right direction
     IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_RIGHT).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_RIGHT).EQ.EXTERNAL_TILE) THEN
           CALL clover_unpack_right(fields, tile, depth,                     &
             chunk%right_rcv_buffer,           &
             left_right_offset)
@@ -441,7 +441,7 @@ CONTAINS
     IF(chunk%chunk_neighbours(chunk_bottom).NE.external_face) THEN
       ! do bottom exchanges
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_BOTTOM).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_BOTTOM).EQ.EXTERNAL_TILE) THEN
           CALL clover_pack_bottom(tile, fields, depth, bottom_top_offset)
         ENDIF
       ENDDO
@@ -458,7 +458,7 @@ CONTAINS
     IF(chunk%chunk_neighbours(chunk_top).NE.external_face) THEN
       ! do top exchanges
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_TOP).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_TOP).EQ.EXTERNAL_TILE) THEN
           CALL clover_pack_top(tile, fields, depth, bottom_top_offset)
         ENDIF
       ENDDO
@@ -478,7 +478,7 @@ CONTAINS
     !unpack in top direction
     IF( chunk%chunk_neighbours(chunk_top).NE.external_face ) THEN
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_TOP).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_TOP).EQ.EXTERNAL_TILE) THEN
           CALL clover_unpack_top(fields, tile, depth,                       &
             chunk%top_rcv_buffer,               &
             bottom_top_offset)
@@ -489,7 +489,7 @@ CONTAINS
     !unpack in bottom direction
     IF(chunk%chunk_neighbours(chunk_bottom).NE.external_face) THEN
       DO tile=1,tiles_per_chunk
-        IF(chunk%tiles(tile)%external_tile_mask(TILE_BOTTOM).EQ.1) THEN
+        IF(chunk%tiles(tile)%tp%tile_neighbours(TILE_BOTTOM).EQ.EXTERNAL_TILE) THEN
           CALL clover_unpack_bottom(fields, tile, depth,                   &
             chunk%bottom_rcv_buffer,         &
             bottom_top_offset)
@@ -509,14 +509,14 @@ CONTAINS
     INTEGER      :: left_right_offset(:)
   
   
-    t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
-    
+    t_offset = (chunk%tiles(tile)%tp%t_bottom - chunk%bottom)*depth
+    !$ACC DATA
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -524,11 +524,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -536,11 +536,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -548,11 +548,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -560,11 +560,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -572,11 +572,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -584,11 +584,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -596,11 +596,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -608,11 +608,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -620,11 +620,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -632,11 +632,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -644,11 +644,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -656,11 +656,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -668,11 +668,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -680,11 +680,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_pack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%left_snd_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -692,7 +692,8 @@ CONTAINS
 
       ENDIF
   
-    
+    !$ACC UPDATE HOST(chunk%left_snd_buffer)
+    !$ACC END DATA
   
   
   END SUBROUTINE clover_pack_left
@@ -729,14 +730,16 @@ CONTAINS
     INTEGER         :: left_right_offset(:)
     REAL(KIND=8)    :: left_rcv_buffer(:)
 
-    t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_bottom - chunk%bottom)*depth
+!$ACC DATA 
+!$ACC UPDATE DEVICE (chunk%left_rcv_buffer)
 
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -744,11 +747,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -756,11 +759,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -768,11 +771,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -780,11 +783,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -792,11 +795,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -804,11 +807,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -816,11 +819,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -828,11 +831,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -840,11 +843,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -852,11 +855,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -864,11 +867,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -876,11 +879,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -888,11 +891,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -900,18 +903,18 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_left(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_unpack_message_left(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%left_rcv_buffer,                &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
           left_right_offset(FIELD_MASS_FLUX_Y)+t_offset)
 
       ENDIF
-
+!$ACC END DATA
 
 
   END SUBROUTINE clover_unpack_left
@@ -925,14 +928,14 @@ CONTAINS
     INTEGER        :: tile, fields(:), depth, tot_packr, left_right_offset(:), t_offset
   
   
-    t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
-
+    t_offset = (chunk%tiles(tile)%tp%t_bottom - chunk%bottom)*depth
+!$ACC DATA
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -940,11 +943,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -952,11 +955,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -964,11 +967,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -976,11 +979,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -988,11 +991,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1000,11 +1003,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1012,11 +1015,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1024,11 +1027,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1037,11 +1040,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1050,11 +1053,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1062,11 +1065,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1074,11 +1077,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1086,11 +1089,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1098,11 +1101,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_pack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%right_snd_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1110,7 +1113,10 @@ CONTAINS
 
       ENDIF
 
-  
+
+  !$ACC UPDATE HOST(chunk%right_snd_buffer)
+  !$ACC END DATA
+
   END SUBROUTINE clover_pack_right
 
   SUBROUTINE clover_send_recv_message_right(right_snd_buffer, right_rcv_buffer,   &
@@ -1146,14 +1152,17 @@ CONTAINS
     INTEGER         :: fields(:), tile, total_in_right_buff, depth, left_right_offset(:), t_offset
     REAL(KIND=8)    :: right_rcv_buffer(:)
   
-    t_offset = (chunk%tiles(tile)%t_bottom - chunk%bottom)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_bottom - chunk%bottom)*depth
+
+!$ACC DATA 
+!$ACC UPDATE DEVICE (chunk%right_rcv_buffer)
 
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1162,11 +1171,11 @@ CONTAINS
       ENDIF
 
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1174,11 +1183,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1186,11 +1195,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1198,11 +1207,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1210,11 +1219,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1222,11 +1231,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1234,11 +1243,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1246,11 +1255,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1258,11 +1267,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1270,11 +1279,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1282,11 +1291,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1294,11 +1303,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1306,11 +1315,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1318,18 +1327,18 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_right(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_unpack_message_right(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%right_rcv_buffer,               &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
           left_right_offset(FIELD_MASS_FLUX_Y)+t_offset)
 
       ENDIF
-
+!$ACC END DATA
 
   END SUBROUTINE clover_unpack_right
 
@@ -1341,14 +1350,14 @@ CONTAINS
 
     INTEGER        :: tile, fields(:), depth, bottom_top_offset(:), t_offset
   
-    t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_left - chunk%left)*depth
 
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1356,11 +1365,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1368,11 +1377,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1380,11 +1389,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1392,11 +1401,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1404,11 +1413,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1416,11 +1425,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1428,11 +1437,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1440,11 +1449,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1452,11 +1461,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1464,11 +1473,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1476,11 +1485,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1488,11 +1497,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1500,11 +1509,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1512,11 +1521,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_pack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%top_snd_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1560,14 +1569,14 @@ CONTAINS
     INTEGER         :: fields(:), tile, total_in_top_buff, depth, bottom_top_offset(:), t_offset
     REAL(KIND=8)    :: top_rcv_buffer(:)
   
-    t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_left - chunk%left)*depth
 
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1575,11 +1584,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1587,11 +1596,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1599,11 +1608,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1611,11 +1620,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1623,11 +1632,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1635,11 +1644,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1647,11 +1656,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1659,11 +1668,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1671,11 +1680,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1683,11 +1692,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1695,11 +1704,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1707,11 +1716,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1719,11 +1728,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1731,11 +1740,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_top(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_unpack_message_top(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%top_rcv_buffer,                 &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1754,14 +1763,14 @@ CONTAINS
 
     INTEGER        :: tile, fields(:), depth, tot_packb, bottom_top_offset(:), t_offset
   
-    t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_left - chunk%left)*depth
     IF(use_fortran_kernels) THEN
 
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1770,11 +1779,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1782,11 +1791,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1794,11 +1803,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1806,11 +1815,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1818,11 +1827,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1830,11 +1839,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1842,11 +1851,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1854,11 +1863,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1866,11 +1875,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1878,11 +1887,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -1890,11 +1899,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1902,11 +1911,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1914,11 +1923,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -1926,11 +1935,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_pack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%bottom_snd_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -1975,14 +1984,14 @@ CONTAINS
     INTEGER         :: fields(:), tile, depth, bottom_top_offset(:), t_offset
     REAL(KIND=8)    :: bottom_rcv_buffer(:)
   
-    t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
+    t_offset = (chunk%tiles(tile)%tp%t_left - chunk%left)*depth
 
       IF(fields(FIELD_DENSITY0).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density0,                 &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density0,                 &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -1990,11 +1999,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_DENSITY1).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%density1,                 &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%density1,                 &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2002,11 +2011,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY0).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy0,                  &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy0,                  &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2014,11 +2023,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_ENERGY1).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%energy1,                  &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%energy1,                  &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2026,11 +2035,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_PRESSURE).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%pressure,                 &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%pressure,                 &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2038,11 +2047,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VISCOSITY).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%viscosity,                &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%viscosity,                &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2050,11 +2059,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_SOUNDSPEED).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%soundspeed,               &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%soundspeed,               &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, CELL_DATA,                             &
@@ -2062,11 +2071,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL0).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel0,                    &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel0,                    &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -2074,11 +2083,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_XVEL1).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%xvel1,                    &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%xvel1,                    &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -2086,11 +2095,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL0).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel0,                    &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel0,                    &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -2098,11 +2107,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_YVEL1).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%yvel1,                    &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%yvel1,                    &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, VERTEX_DATA,                           &
@@ -2110,11 +2119,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_x,               &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_x,               &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -2122,11 +2131,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%vol_flux_y,               &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%vol_flux_y,               &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -2134,11 +2143,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_x,              &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_x,              &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, X_FACE_DATA,                           &
@@ -2146,11 +2155,11 @@ CONTAINS
 
       ENDIF
       IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
-        CALL clover_unpack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
-          chunk%tiles(tile)%t_xmax,                    &
-          chunk%tiles(tile)%t_ymin,                    &
-          chunk%tiles(tile)%t_ymax,                    &
-          chunk%tiles(tile)%field%mass_flux_y,              &
+        CALL clover_unpack_message_bottom(chunk%tiles(tile)%tp%t_xmin,                    &
+          chunk%tiles(tile)%tp%t_xmax,                    &
+          chunk%tiles(tile)%tp%t_ymin,                    &
+          chunk%tiles(tile)%tp%t_ymax,                    &
+          chunk%tiles(tile)%tp%field%mass_flux_y,              &
           chunk%bottom_rcv_buffer,              &
           CELL_DATA,VERTEX_DATA,X_FACE_DATA,Y_FACE_DATA,&
           depth, Y_FACE_DATA,                           &
@@ -2251,5 +2260,210 @@ CONTAINS
 
   END SUBROUTINE clover_check_error
 
+  SUBROUTINE deepcopy_tile(tile)
 
+   USE openacc
+   
+   IMPLICIT NONE
+
+   INTEGER :: tile
+
+    !CALL acc_copyin(chunk%tiles(tile))
+
+    !CALL acc_attach(chunk%tiles(tile))
+
+    !CALL acc_copyin(chunk%tiles(tile)%tp%field)
+
+    !CALL acc_attach(chunk%tiles(tile)%tp%field)
+
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%density0)   
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%density1)   
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%energy0)    
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%energy1)    
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%pressure)   
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%soundspeed) 
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%viscosity)  
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%xvel0)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%yvel0)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%xvel1)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%yvel1)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vol_flux_x) 
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vol_flux_y) 
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%mass_flux_x)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%mass_flux_y)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%volume)     
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array1)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array2)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array3)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array4)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array5)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array6)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%work_array7)
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%cellx)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%celly)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%celldx)     
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%celldy)     
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vertexx)    
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vertexdx)   
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vertexy)    
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%vertexdy)   
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%xarea)      
+    CALL acc_copyin(chunk%tiles(tile)%tp%field%yarea)    
+    
+    
+    CALL acc_attach(chunk%tiles(tile)%tp%field%density0)   
+    CALL acc_attach(chunk%tiles(tile)%tp%field%density1)   
+    CALL acc_attach(chunk%tiles(tile)%tp%field%energy0)    
+    CALL acc_attach(chunk%tiles(tile)%tp%field%energy1)    
+    CALL acc_attach(chunk%tiles(tile)%tp%field%pressure)   
+    CALL acc_attach(chunk%tiles(tile)%tp%field%soundspeed) 
+    CALL acc_attach(chunk%tiles(tile)%tp%field%viscosity)  
+    CALL acc_attach(chunk%tiles(tile)%tp%field%xvel0)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%yvel0)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%xvel1)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%yvel1)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vol_flux_x) 
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vol_flux_y) 
+    CALL acc_attach(chunk%tiles(tile)%tp%field%mass_flux_x)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%mass_flux_y)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%volume)     
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array1)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array2)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array3)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array4)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array5)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array6)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%work_array7)
+    CALL acc_attach(chunk%tiles(tile)%tp%field%cellx)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%celly)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%celldx)     
+    CALL acc_attach(chunk%tiles(tile)%tp%field%celldy)     
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vertexx)    
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vertexdx)   
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vertexy)    
+    CALL acc_attach(chunk%tiles(tile)%tp%field%vertexdy)   
+    CALL acc_attach(chunk%tiles(tile)%tp%field%xarea)      
+    CALL acc_attach(chunk%tiles(tile)%tp%field%yarea)        
+  
+  END SUBROUTINE deepcopy_tile
+
+
+  SUBROUTINE updatehost_tile(tile)
+
+   USE openacc
+
+   IMPLICIT NONE
+
+   INTEGER :: tile
+
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%density0)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%density1)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%energy0)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%energy1)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%pressure)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%soundspeed)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%viscosity)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%xvel0)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%yvel0)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%xvel1)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%yvel1)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vol_flux_x)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vol_flux_y)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%mass_flux_x)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%mass_flux_y)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%volume)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%cellx)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%celly)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%celldx)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%celldy)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vertexx)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vertexdx)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vertexy)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%vertexdy)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%xarea)
+    CALL acc_update_self(chunk%tiles(tile)%tp%field%yarea)
+
+
+  END SUBROUTINE updatehost_tile
+   
+  SUBROUTINE clover_swap_timers(my_timer, left_timer, right_timer)
+
+    IMPLICIT NONE
+
+    REAL(KIND=8) :: my_timer, left_timer, right_timer
+
+    REAL(KIND=8) :: my_timer_arr(1), left_timer_arr(1), right_timer_arr(1)
+
+
+    INTEGER      :: request(4)
+    INTEGER      :: message_count,err
+    INTEGER      :: status(MPI_STATUS_SIZE,4)
+    INTEGER      :: end_pack_index_left_right, end_pack_index_bottom_top,field
+
+
+    my_timer_arr(1)=my_timer
+    left_timer_arr(1)=0
+    right_timer_arr(1)=0
+
+
+    request=0
+    message_count=0
+
+
+    end_pack_index_left_right=0
+    end_pack_index_bottom_top=0
+
+
+    IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
+
+
+      !send and recv messagse to the left
+      CALL clover_send_recv_message_left(my_timer_arr,     &
+        left_timer_arr, 1, 1, 2,                           &
+        request(message_count+1), request(message_count+2))
+      message_count = message_count + 2
+    ENDIF
+
+    IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
+      ! do right exchanges
+
+
+      !send message to the right
+      CALL clover_send_recv_message_right(my_timer_arr,    &
+        right_timer_arr, 1, 2, 1,                          &
+        request(message_count+1), request(message_count+2))
+      message_count = message_count + 2
+    ENDIF
+
+    !make a call to wait / sync
+    CALL MPI_WAITALL(message_count,request,status,err)
+
+    IF(chunk%chunk_neighbours(chunk_left).NE.external_face) THEN
+    left_timer = left_timer_arr(1)
+    ENDIF
+
+    IF(chunk%chunk_neighbours(chunk_right).NE.external_face) THEN
+    right_timer = right_timer_arr(1)
+    ENDIF
+
+
+
+  END SUBROUTINE clover_swap_timers
+
+
+  SUBROUTINE clover_allgather_int(value,values)
+
+    IMPLICIT NONE
+
+    INTEGER :: value
+
+    INTEGER :: values(parallel%max_task)
+
+    INTEGER :: err
+
+    values(1)=value ! Just to ensure it will work in serial
+
+    CALL MPI_ALLGATHER(value,1,MPI_INTEGER,values,1,MPI_INTEGER,MPI_COMM_WORLD,err)
+
+  END SUBROUTINE clover_allgather_int
 END MODULE clover_module

@@ -57,25 +57,25 @@ CONTAINS
 
 
         CALL PdV_kernel(predict,                  &
-          chunk%tiles(tile)%t_xmin,      &
-          chunk%tiles(tile)%t_xmax,      &
-          chunk%tiles(tile)%t_ymin,      &
-          chunk%tiles(tile)%t_ymax,      &
+          chunk%tiles(tile)%tp%t_xmin,      &
+          chunk%tiles(tile)%tp%t_xmax,      &
+          chunk%tiles(tile)%tp%t_ymin,      &
+          chunk%tiles(tile)%tp%t_ymax,      &
           dt,                         &
-          chunk%tiles(tile)%field%xarea,      &
-          chunk%tiles(tile)%field%yarea,      &
-          chunk%tiles(tile)%field%volume ,    &
-          chunk%tiles(tile)%field%density0,   &
-          chunk%tiles(tile)%field%density1,   &
-          chunk%tiles(tile)%field%energy0,    &
-          chunk%tiles(tile)%field%energy1,    &
-          chunk%tiles(tile)%field%pressure,   &
-          chunk%tiles(tile)%field%viscosity,  &
-          chunk%tiles(tile)%field%xvel0,      &
-          chunk%tiles(tile)%field%xvel1,      &
-          chunk%tiles(tile)%field%yvel0,      &
-          chunk%tiles(tile)%field%yvel1,      &
-          chunk%tiles(tile)%field%work_array1 )
+          chunk%tiles(tile)%tp%field%xarea,      &
+          chunk%tiles(tile)%tp%field%yarea,      &
+          chunk%tiles(tile)%tp%field%volume ,    &
+          chunk%tiles(tile)%tp%field%density0,   &
+          chunk%tiles(tile)%tp%field%density1,   &
+          chunk%tiles(tile)%tp%field%energy0,    &
+          chunk%tiles(tile)%tp%field%energy1,    &
+          chunk%tiles(tile)%tp%field%pressure,   &
+          chunk%tiles(tile)%tp%field%viscosity,  &
+          chunk%tiles(tile)%tp%field%xvel0,      &
+          chunk%tiles(tile)%tp%field%xvel1,      &
+          chunk%tiles(tile)%tp%field%yvel0,      &
+          chunk%tiles(tile)%tp%field%yvel1,      &
+          chunk%tiles(tile)%tp%field%work_array1 )
 
 
       ENDDO

@@ -168,6 +168,12 @@ MODULE definitions_module
 
   END TYPE tile_type
 
+
+  TYPE tile_pointer_type
+    TYPE(tile_type), POINTER :: tp
+
+  END TYPE tile_pointer_type
+
    
   TYPE chunk_type
 
@@ -183,7 +189,7 @@ MODULE definitions_module
     REAL(KIND=8),ALLOCATABLE:: left_snd_buffer(:),right_snd_buffer(:),bottom_snd_buffer(:),top_snd_buffer(:)
 
     !TYPE(field_type):: field
-    TYPE(tile_type), DIMENSION(:), ALLOCATABLE :: tiles
+    TYPE(tile_pointer_type), DIMENSION(:), ALLOCATABLE :: tiles
 
     INTEGER         :: x_min  &
       ,y_min  &

@@ -36,17 +36,17 @@ CONTAINS
 
       DO tile=1,tiles_per_chunk
 
-        CALL viscosity_kernel(chunk%tiles(tile)%t_xmin,                   &
-          chunk%tiles(tile)%t_xmax,                     &
-          chunk%tiles(tile)%t_ymin,                     &
-          chunk%tiles(tile)%t_ymax,                     &
-          chunk%tiles(tile)%field%celldx,                    &
-          chunk%tiles(tile)%field%celldy,                    &
-          chunk%tiles(tile)%field%density0,                  &
-          chunk%tiles(tile)%field%pressure,                  &
-          chunk%tiles(tile)%field%viscosity,                 &
-          chunk%tiles(tile)%field%xvel0,                     &
-          chunk%tiles(tile)%field%yvel0                      )
+        CALL viscosity_kernel(chunk%tiles(tile)%tp%t_xmin,                   &
+          chunk%tiles(tile)%tp%t_xmax,                     &
+          chunk%tiles(tile)%tp%t_ymin,                     &
+          chunk%tiles(tile)%tp%t_ymax,                     &
+          chunk%tiles(tile)%tp%field%celldx,                    &
+          chunk%tiles(tile)%tp%field%celldy,                    &
+          chunk%tiles(tile)%tp%field%density0,                  &
+          chunk%tiles(tile)%tp%field%pressure,                  &
+          chunk%tiles(tile)%tp%field%viscosity,                 &
+          chunk%tiles(tile)%tp%field%xvel0,                     &
+          chunk%tiles(tile)%tp%field%yvel0                      )
 
 
       ENDDO

@@ -51,27 +51,27 @@ CONTAINS
 
         DO tile=1,tiles_per_chunk
 
-          CALL update_halo_kernel(chunk%tiles(tile)%t_xmin,          &
-            chunk%tiles(tile)%t_xmax,          &
-            chunk%tiles(tile)%t_ymin,          &
-            chunk%tiles(tile)%t_ymax,          &
+          CALL update_halo_kernel(chunk%tiles(tile)%tp%t_xmin,          &
+            chunk%tiles(tile)%tp%t_xmax,          &
+            chunk%tiles(tile)%tp%t_ymin,          &
+            chunk%tiles(tile)%tp%t_ymax,          &
             chunk%chunk_neighbours,     &
-            chunk%tiles(tile)%tile_neighbours,     &
-            chunk%tiles(tile)%field%density0,       &
-            chunk%tiles(tile)%field%energy0,        &
-            chunk%tiles(tile)%field%pressure,       &
-            chunk%tiles(tile)%field%viscosity,      &
-            chunk%tiles(tile)%field%soundspeed,     &
-            chunk%tiles(tile)%field%density1,       &
-            chunk%tiles(tile)%field%energy1,        &
-            chunk%tiles(tile)%field%xvel0,          &
-            chunk%tiles(tile)%field%yvel0,          &
-            chunk%tiles(tile)%field%xvel1,          &
-            chunk%tiles(tile)%field%yvel1,          &
-            chunk%tiles(tile)%field%vol_flux_x,     &
-            chunk%tiles(tile)%field%vol_flux_y,     &
-            chunk%tiles(tile)%field%mass_flux_x,    &
-            chunk%tiles(tile)%field%mass_flux_y,    &
+            chunk%tiles(tile)%tp%tile_neighbours,     &
+            chunk%tiles(tile)%tp%field%density0,       &
+            chunk%tiles(tile)%tp%field%energy0,        &
+            chunk%tiles(tile)%tp%field%pressure,       &
+            chunk%tiles(tile)%tp%field%viscosity,      &
+            chunk%tiles(tile)%tp%field%soundspeed,     &
+            chunk%tiles(tile)%tp%field%density1,       &
+            chunk%tiles(tile)%tp%field%energy1,        &
+            chunk%tiles(tile)%tp%field%xvel0,          &
+            chunk%tiles(tile)%tp%field%yvel0,          &
+            chunk%tiles(tile)%tp%field%xvel1,          &
+            chunk%tiles(tile)%tp%field%yvel1,          &
+            chunk%tiles(tile)%tp%field%vol_flux_x,     &
+            chunk%tiles(tile)%tp%field%vol_flux_y,     &
+            chunk%tiles(tile)%tp%field%mass_flux_x,    &
+            chunk%tiles(tile)%tp%field%mass_flux_y,    &
             fields,                         &
             depth                          )
 

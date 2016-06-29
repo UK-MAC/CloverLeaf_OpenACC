@@ -35,14 +35,14 @@ CONTAINS
 
       DO tile=1,tiles_per_chunk
 
-        CALL revert_kernel(chunk%tiles(tile)%t_xmin,   &
-          chunk%tiles(tile)%t_xmax,     &
-          chunk%tiles(tile)%t_ymin,     &
-          chunk%tiles(tile)%t_ymax,     &
-          chunk%tiles(tile)%field%density0,  &
-          chunk%tiles(tile)%field%density1,  &
-          chunk%tiles(tile)%field%energy0,   &
-          chunk%tiles(tile)%field%energy1    )
+        CALL revert_kernel(chunk%tiles(tile)%tp%t_xmin,   &
+          chunk%tiles(tile)%tp%t_xmax,     &
+          chunk%tiles(tile)%tp%t_ymin,     &
+          chunk%tiles(tile)%tp%t_ymax,     &
+          chunk%tiles(tile)%tp%field%density0,  &
+          chunk%tiles(tile)%tp%field%density1,  &
+          chunk%tiles(tile)%tp%field%energy0,   &
+          chunk%tiles(tile)%tp%field%energy1    )
 
 
       ENDDO
