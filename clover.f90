@@ -1755,8 +1755,8 @@ CONTAINS
     INTEGER        :: tile, fields(:), depth, tot_packb, bottom_top_offset(:), t_offset
   
     t_offset = (chunk%tiles(tile)%t_left - chunk%left)*depth
-    IF(use_fortran_kernels) THEN
 
+      IF(fields(FIELD_DENSITY0).EQ.1) THEN
         CALL clover_pack_message_bottom(chunk%tiles(tile)%t_xmin,                    &
           chunk%tiles(tile)%t_xmax,                    &
           chunk%tiles(tile)%t_ymin,                    &
