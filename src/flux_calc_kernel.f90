@@ -53,9 +53,8 @@ CONTAINS
     ! Note that the loops calculate one extra flux than required, but this
     ! allows loop fusion that improves performance
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min,y_max+1
-!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max+1
         vol_flux_x(j,k)=0.25_8*dt*xarea(j,k)                  &
           *(xvel0(j,k)+xvel0(j,k+1)+xvel1(j,k)+xvel1(j,k+1))

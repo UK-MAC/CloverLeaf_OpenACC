@@ -45,9 +45,8 @@ CONTAINS
 !$ACC DATA &
 !$ACC PRESENT(density,energy,pressure,soundspeed)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT PRIVATE(v,pressurebyenergy,pressurebyvolume,sound_speed_squared)
       DO j=x_min,x_max
         v=1.0_8/density(j,k)
         pressure(j,k)=(1.4_8-1.0_8)*density(j,k)*energy(j,k)

@@ -61,9 +61,8 @@ CONTAINS
 !$ACC DATA &
 !$ACC PRESENT(left_snd_buffer, field)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
-!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         left_snd_buffer(index)=field(x_min+x_inc-1+j,k)
@@ -114,9 +113,8 @@ CONTAINS
 !$ACC PRESENT (left_rcv_buffer, field)
 !$ACC UPDATE DEVICE (left_rcv_buffer)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
-!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_min-j,k)=left_rcv_buffer(index)
@@ -164,9 +162,8 @@ CONTAINS
 !$ACC DATA &
 !$ACC PRESENT(right_snd_buffer, field)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
-!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         right_snd_buffer(index)=field(x_max+1-j,k)
@@ -216,9 +213,8 @@ CONTAINS
 !$ACC PRESENT (right_rcv_buffer, field)
 !$ACC UPDATE DEVICE (right_rcv_buffer)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min-depth,y_max+y_inc+depth
-!$ACC LOOP INDEPENDENT
       DO j=1,depth
         index= buffer_offset + j+(k+depth-1)*depth
         field(x_max+x_inc+j,k)=right_rcv_buffer(index)
@@ -267,9 +263,8 @@ CONTAINS
 !$ACC DATA &
 !$ACC PRESENT(top_snd_buffer, field)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=1,depth
-!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         top_snd_buffer(index)=field(j,y_max+1-k)
@@ -319,9 +314,8 @@ CONTAINS
 !$ACC PRESENT (top_rcv_buffer, field)
 !$ACC UPDATE DEVICE (top_rcv_buffer)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=1,depth
-!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j + depth+(k-1)*(x_max+x_inc+(2*depth))
@@ -371,9 +365,8 @@ CONTAINS
 !$ACC DATA &
 !$ACC PRESENT(bottom_snd_buffer, field)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=1,depth
-!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
@@ -424,9 +417,8 @@ CONTAINS
 !$ACC PRESENT (bottom_rcv_buffer, field)
 !$ACC UPDATE DEVICE (bottom_rcv_buffer)
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=1,depth
-!$ACC LOOP INDEPENDENT
       DO j=x_min-depth,x_max+x_inc+depth
         index= buffer_offset + k+(j+depth-1)*depth
         !index= buffer_offset + j+depth+(k-1)*(x_max+x_inc+(2*depth))
