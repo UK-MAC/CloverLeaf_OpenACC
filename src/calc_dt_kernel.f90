@@ -93,10 +93,8 @@ CONTAINS
 
 !$ACC KERNELS
 
-
-!$ACC LOOP INDEPENDENT REDUCTION(MIN : dt_min_val)
+!$ACC LOOP COLLAPSE(2) INDEPENDENT REDUCTION(MIN : dt_min_val)
     DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT PRIVATE(dsx,dsy,cc,dv1,dv2,div,dtct,dtut,dtvt,dtdivt) REDUCTION(MIN : dt_min_val)
       DO j=x_min,x_max
 
         dsx=celldx(j)
@@ -136,8 +134,6 @@ CONTAINS
 
       ENDDO
     ENDDO
-
-
 
 !$ACC END KERNELS
 

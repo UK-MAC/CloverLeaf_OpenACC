@@ -59,9 +59,8 @@ CONTAINS
 
 !$ACC KERNELS
 
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min,y_max+1
-!$ACC LOOP INDEPENDENT PRIVATE(j,k,stepbymass_s)
       DO j=x_min,x_max+1
         stepbymass_s=halfdt/((density0(j-1,k-1)*volume(j-1,k-1)  &
           +density0(j  ,k-1)*volume(j  ,k-1)  &

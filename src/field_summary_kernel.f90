@@ -54,9 +54,9 @@ CONTAINS
 !$ACC PRESENT(volume,density0,energy0,pressure,xvel0,yvel0)
 !$ACC KERNELS
 
-!$ACC LOOP INDEPENDENT REDUCTION(+:vol) REDUCTION(+:mass) REDUCTION(+:press) REDUCTION(+:ie) REDUCTION(+:ke), private(vsqrd,cell_vol,cell_mass,jv,kv) GANG(128)
+!$ACC LOOP INDEPENDENT REDUCTION(+:vol,mass,press,ie,ke)
     DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT REDUCTION(+:vol) REDUCTION(+:mass) REDUCTION(+:press) REDUCTION(+:ie) REDUCTION(+:ke)
+!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max
         vsqrd=0.0
         DO kv=k,k+1

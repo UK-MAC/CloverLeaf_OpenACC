@@ -49,9 +49,8 @@ CONTAINS
 !$ACC PRESENT(density0,density1,energy0,energy1,xvel0,xvel1,yvel0,yvel1)
 
 !$ACC KERNELS
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max
         density0(j,k)=density1(j,k)
         energy0(j,k)=energy1(j,k)
@@ -59,9 +58,8 @@ CONTAINS
     ENDDO
 
 
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
     DO k=y_min,y_max+1
-!$ACC LOOP INDEPENDENT
       DO j=x_min,x_max+1
         xvel0(j,k)=xvel1(j,k)
         yvel0(j,k)=yvel1(j,k)

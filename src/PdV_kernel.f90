@@ -74,9 +74,8 @@ CONTAINS
     IF(predict)THEN
 !$ACC KERNELS
 
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
       DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume,energy_change,recip_volume,volume_change_s)
         DO j=x_min,x_max
 
           left_flux=  (xarea(j  ,k  )*(xvel0(j  ,k  )+xvel0(j  ,k+1)                     &
@@ -111,9 +110,8 @@ CONTAINS
     ELSE
 !$ACC KERNELS
 
-!$ACC LOOP INDEPENDENT
+!$ACC LOOP COLLAPSE(2) INDEPENDENT
       DO k=y_min,y_max
-!$ACC LOOP INDEPENDENT PRIVATE(right_flux,left_flux,top_flux,bottom_flux,total_flux,min_cell_volume,energy_change,recip_volume,volume_change_s)
         DO j=x_min,x_max
 
           left_flux=  (xarea(j  ,k  )*(xvel0(j  ,k  )+xvel0(j  ,k+1)                     &
